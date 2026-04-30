@@ -4,7 +4,6 @@ session_start();
 require_once 'connexion.php';
 $pdo = connexion();
 
-// Génération d'un jeton CSRF (anti-CSRF)
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -15,7 +14,6 @@ $erreurs = [];
 $old = ['nom' => '', 'prenom' => '', 'email' => '', 'filieres' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérification du jeton CSRF
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $erreurs[] = "Jeton CSRF invalide.";
     }

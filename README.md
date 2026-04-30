@@ -5,7 +5,7 @@ Architecture en couches (config / includes / pages / public) avec un point d'ent
 
 ## Auteur
 
-**Khalid MORJANE**
+**Khalid MORJAN**
 
 ## Fonctionnalités
 

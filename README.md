@@ -179,17 +179,16 @@ http://localhost/TP_CRUD_en_PHP_MySQL/index.php
 
 ---
 
-# 📸 Screenshots 
 
-```md
-## 📸 Screenshots
+# 📸 Screenshots
 
-### Home Page
-![Home](screenshots/home.PNG)
+<p align="center">
+  <img src="screenshots/home.PNG" alt="Home Page" width="700"/>
+</p>
 
-### Add Student Page
-![Add](screenshots/add.PNG)
-```
+<p align="center">
+  <img src="screenshots/add.PNG" alt="Add Student Page" width="700"/>
+</p>
 
 ---
 

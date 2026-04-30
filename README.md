@@ -182,9 +182,13 @@ http://localhost/TP_CRUD_en_PHP_MySQL/index.php
 # 📸 Screenshots 
 
 ```md
+## 📸 Screenshots
+
+### Home Page
 ![Home](screenshots/home.PNG)
+
+### Add Student Page
 ![Add](screenshots/add.PNG)
-```
 
 ---
 

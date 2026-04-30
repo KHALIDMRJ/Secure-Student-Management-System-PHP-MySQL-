@@ -144,7 +144,7 @@ htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git clone https://github.com/KHALIDMRJ/gestion_etudiants.git
 ```
 
 ### 2. Move project to XAMPP
@@ -182,8 +182,8 @@ http://localhost/TP_CRUD_en_PHP_MySQL/index.php
 # 📸 Screenshots 
 
 ```md
-![Home](screenshots/home.png)
-![Add](screenshots/add.png)
+![Home](screenshots/home.PNG)
+![Add](screenshots/add.PNG)
 ```
 
 ---

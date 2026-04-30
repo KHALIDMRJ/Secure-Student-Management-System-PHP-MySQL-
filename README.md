@@ -200,7 +200,7 @@ http://localhost/TP_CRUD_en_PHP_MySQL/index.php
 
 # 👨‍💻 Author
 
-**Khalid MORJANE**
+**Khalid MORJAN**
 
 * AI & Data Student
 * Passionate about Software Engineering & Web Security

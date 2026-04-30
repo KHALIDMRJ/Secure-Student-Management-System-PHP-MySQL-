@@ -11,19 +11,16 @@ session_start();
 require_once 'connexion.php';
 $pdo = connexion();
 
-// Génération d'un jeton CSRF (anti-CSRF)
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
 $erreurs = [];
 
-// Valeurs à réafficher en cas d'erreur
 $old = ['nom' => '', 'prenom' => '', 'email' => '', 'filieres' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérification du jeton CSRF
-    if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $erreurs[] = "Jeton CSRF invalide.";
     }
 
@@ -34,7 +31,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $old = compact('nom', 'prenom', 'email', 'filieres');
 
-    // Validation côté serveur
     if ($nom === '' || mb_strlen($nom) > 100) {
         $erreurs[] = "Nom invalide (1 à 100 caractères).";
     } elseif (!preg_match("/^[\p{L}\s'-]+$/u", $nom)) {
@@ -55,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erreurs[] = "Filière invalide (1 à 100 caractères).";
     }
 
-    // Insertion sécurisée par requête préparée (anti SQL injection)
     if (empty($erreurs)) {
         try {
             $sql = "INSERT INTO etudiants (nom, prenom, email, filieres)
@@ -67,10 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->bindValue(':filieres', $filieres, PDO::PARAM_STR);
             $stmt->execute();
 
-            // Régénération du jeton après une opération sensible
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 
-            // Redirection PRG (Post/Redirect/Get) pour éviter la double soumission
             header('Location: index.php?ajout=ok');
             exit;
         } catch (PDOException $e) {
@@ -80,7 +73,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Helper d'échappement HTML (anti-XSS)
 function e(?string $value): string {
     return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }

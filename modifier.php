@@ -8,7 +8,6 @@ session_start();
 require_once 'connexion.php';
 $pdo = connexion();
 
-// Génération d'un jeton CSRF
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -16,13 +15,11 @@ if (empty($_SESSION['csrf_token'])) {
 $erreurs = [];
 $etudiant = null;
 
-// Récupération sécurisée de l'ID
 $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT, [
     'options' => ['min_range' => 1]
 ]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérification du jeton CSRF
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         $erreurs[] = "Jeton CSRF invalide.";
     }
@@ -39,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email']    ?? '');
     $filieres = trim($_POST['filieres'] ?? '');
 
-    // Validation des champs
     if ($nom === '' || mb_strlen($nom) > 100) {
         $erreurs[] = "Nom invalide (1 à 100 caractères).";
     } elseif (!preg_match("/^[\p{L}\s'-]+$/u", $nom)) {
@@ -60,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $erreurs[] = "Filière invalide (1 à 100 caractères).";
     }
 
-    // Mise à jour si aucune erreur (requête préparée -> anti SQL injection)
     if (empty($erreurs)) {
         try {
             $sql = "UPDATE etudiants
@@ -85,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Récupération de l'étudiant pour pré-remplir le formulaire
 if ($id !== false && $id !== null) {
     try {
         $stmt = $pdo->prepare("SELECT id, nom, prenom, email, filieres FROM etudiants WHERE id = :id");
@@ -104,7 +98,6 @@ if ($id !== false && $id !== null) {
     $erreurs[] = "Identifiant manquant ou invalide.";
 }
 
-// Helper d'échappement HTML
 function e(?string $value): string {
     return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }

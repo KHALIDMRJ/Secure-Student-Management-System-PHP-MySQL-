@@ -5,7 +5,6 @@
 require_once 'connexion.php';
 $pdo = connexion();
 
-// Récupération de la liste des étudiants
 try {
     $stmt = $pdo->query("SELECT id, nom, prenom, email, filieres
                          FROM etudiants
@@ -16,7 +15,6 @@ try {
     die("Erreur de récupération des étudiants.");
 }
 
-// Helper d'échappement HTML
 function e(?string $value): string {
     return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_HTML5, 'UTF-8');
 }

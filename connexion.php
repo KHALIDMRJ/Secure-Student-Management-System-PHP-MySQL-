@@ -5,7 +5,6 @@ function connexion(): PDO {
     $username = 'root';
     $password = '';
 
-    // et pour  utf8mb4 parce que  c'est le charset le plus complet et il supporte tous les caracteres et les guillemets simples n'interpolent pas les variables et $host , $dbname , $username , $password sont des variables et doivent etre interpoler pour qu'ils soient reconnus comme des variables et pas comme des chaines de caracteres
     $dsn = "mysql:host=$host;dbname=$dbname;charset=utf8mb4";
 
     $options = [

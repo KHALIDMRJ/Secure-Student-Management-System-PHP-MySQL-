@@ -67,3 +67,12 @@ function getPDO(): PDO {
         exit('Erreur interne du serveur. Veuillez réessayer plus tard.');
     }
 }
+
+// Rate limiting constants (Phase 4)
+define('RATE_LIMIT_ADD',    10);
+define('RATE_LIMIT_EDIT',   10);
+define('RATE_LIMIT_DELETE',  5);
+define('RATE_LIMIT_WINDOW', 60);
+
+// Honeypot field name (Phase 4)
+define('HONEYPOT_FIELD', 'website');

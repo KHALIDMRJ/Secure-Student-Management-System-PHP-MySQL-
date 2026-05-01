@@ -16,12 +16,40 @@ console.log('Dark mode JS loaded');
    ========================================================= */
 const DARK_KEY = 'studentms_dark_mode';
 
-function applyDarkMode(enable) {
-    document.body.classList.toggle('dark-mode', enable);
+/**
+ * Apply (or remove) dark mode.
+ *
+ * @param {boolean} enable  Whether to turn dark mode on.
+ * @param {boolean} animate When true, briefly attach `.theme-transitioning`
+ *                          to <body> so colours/borders ease between themes.
+ *                          Pass false on the pre-paint call so the saved
+ *                          theme appears instantly with no flash.
+ */
+function applyDarkMode(enable, animate) {
+    if (animate && document.body) {
+        document.body.classList.add('theme-transitioning');
+        // Slightly longer than the longest CSS transition (0.25s) so every
+        // property finishes interpolating before the class is removed.
+        setTimeout(function () {
+            document.body.classList.remove('theme-transitioning');
+        }, 300);
+    }
+
+    if (document.body) {
+        document.body.classList.toggle('dark-mode', enable);
+    }
+
     const icon = document.getElementById('darkModeIcon');
     if (icon) {
         icon.className = enable ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
     }
+
+    // The toggle itself gets a "lit" state when dark mode is active.
+    const btn = document.getElementById('darkModeToggle');
+    if (btn) {
+        btn.classList.toggle('btn-dark-active', enable);
+    }
+
     try {
         localStorage.setItem(DARK_KEY, enable ? '1' : '0');
     } catch (e) {
@@ -30,8 +58,9 @@ function applyDarkMode(enable) {
 }
 
 // Run immediately (before DOMContentLoaded) to avoid a flash of light theme.
+// `animate=false` ensures the saved theme paints instantly, with no transition.
 try {
-    applyDarkMode(localStorage.getItem(DARK_KEY) === '1');
+    applyDarkMode(localStorage.getItem(DARK_KEY) === '1', false);
 } catch (e) {
     /* no-op */
 }
@@ -55,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!toggleBtn) return;
 
         toggleBtn.addEventListener('click', function () {
-            applyDarkMode(!document.body.classList.contains('dark-mode'));
+            applyDarkMode(!document.body.classList.contains('dark-mode'), true);
         });
     }
 
@@ -210,3 +239,64 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+/* =========================================================
+   Phase 5 — search / filter UX on the student list page.
+   Wrapped in IIFEs so they don't pollute global scope; each
+   block no-ops when its target elements aren't on the page.
+   ========================================================= */
+
+// === SEARCH DEBOUNCE ===
+// Auto-submit the filter form 500ms after the user stops typing.
+(function () {
+    const searchInput = document.getElementById('search');
+    const filterForm  = document.getElementById('filterForm');
+    if (!searchInput || !filterForm) return;
+
+    let debounceTimer;
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+            // Reset to page 1 when the search term changes.
+            const pInput = filterForm.querySelector('input[name="p"]');
+            if (pInput) pInput.value = '1';
+            filterForm.submit();
+        }, 500);
+    });
+})();
+
+// === FILIÈRE BADGE CLICK ===
+// Clicking a filière pill in the table sets the filter and submits.
+(function () {
+    document.querySelectorAll('.badge-filiere').forEach(function (badge) {
+        badge.addEventListener('click', function (e) {
+            e.preventDefault();
+            const filterForm = document.getElementById('filterForm');
+            if (!filterForm) return;
+
+            const select = filterForm.querySelector('select[name="filiere"]');
+            if (select) {
+                select.value = badge.textContent.trim();
+                filterForm.submit();
+            }
+        });
+    });
+})();
+
+// === SELECT AUTO-SUBMIT (CSP-compatible) ===
+// The PHP view sets onchange="..." on #filiere and #perpage as a fallback.
+// Our CSP has no 'unsafe-inline' in script-src, so those inline handlers
+// are blocked. Re-bind them via addEventListener so the selects still
+// auto-submit when the user picks a value.
+(function () {
+    const filterForm = document.getElementById('filterForm');
+    if (!filterForm) return;
+
+    ['filiere', 'perpage'].forEach(function (id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', function () {
+            filterForm.submit();
+        });
+    });
+})();

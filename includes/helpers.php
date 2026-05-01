@@ -154,3 +154,108 @@ function is_email_taken(PDO $pdo, string $email, ?int $excludeId = null): bool {
         return true;
     }
 }
+
+/**
+ * Build a URL preserving current query params, overriding specified ones.
+ * Used to build sort/page/filter links without losing other params.
+ *
+ * @param array $overrides Key-value pairs to override in current query.
+ * @return string          Full URL string safe for use in href.
+ */
+function build_url(array $overrides = []): string {
+    $params = array_merge($_GET, $overrides);
+
+    // The router page name (?page=...) is always preserved separately so it
+    // can never be polluted by sort/filter overrides.
+    $routePage = $params['page'] ?? 'index';
+    unset($params['page']);
+
+    // Strip empty / null values so the URL stays tidy.
+    $params = array_filter($params, static fn($v): bool => $v !== '' && $v !== null);
+
+    $query = http_build_query($params);
+    return '?page=' . urlencode((string)$routePage) . ($query ? '&' . $query : '');
+}
+
+/**
+ * Render a Bootstrap-Icon sort indicator for a sortable table header.
+ *
+ * @param string $column       Column name this header sorts by.
+ * @param string $currentSort  Currently active sort column.
+ * @param string $currentOrder Currently active sort order ('asc'|'desc').
+ * @return string              HTML <i> element.
+ */
+function sort_icon(string $column, string $currentSort, string $currentOrder): string {
+    if ($currentSort !== $column) {
+        return '<i class="bi bi-arrow-down-up sort-icon sort-icon--inactive"></i>';
+    }
+    $icon = $currentOrder === 'asc' ? 'bi-sort-up' : 'bi-sort-down';
+    return '<i class="bi ' . $icon . ' sort-icon sort-icon--active"></i>';
+}
+
+/**
+ * Build a pagination descriptor for a result set.
+ *
+ * Smart page list: always show first, last, and current ±2; gaps are
+ * collapsed to a single -1 sentinel which the view renders as an ellipsis.
+ *
+ * @param int $totalRows   Total matching rows.
+ * @param int $currentPage Requested page number (1-based; clamped here).
+ * @param int $perPage     Rows per page.
+ * @return array{
+ *     totalPages: int,
+ *     currentPage: int,
+ *     perPage: int,
+ *     offset: int,
+ *     totalRows: int,
+ *     hasPrev: bool,
+ *     hasNext: bool,
+ *     pages: int[]
+ * }
+ */
+function paginate(int $totalRows, int $currentPage, int $perPage = 10): array {
+    $totalPages  = max(1, (int)ceil($totalRows / max(1, $perPage)));
+    $currentPage = max(1, min($currentPage, $totalPages));
+    $offset      = ($currentPage - 1) * $perPage;
+
+    $pages = [];
+    for ($i = 1; $i <= $totalPages; $i++) {
+        if ($i === 1 || $i === $totalPages
+            || ($i >= $currentPage - 2 && $i <= $currentPage + 2)) {
+            $pages[] = $i;
+        } elseif (end($pages) !== -1) {
+            $pages[] = -1; // ellipsis sentinel
+        }
+    }
+
+    return [
+        'totalPages'  => $totalPages,
+        'currentPage' => $currentPage,
+        'perPage'     => $perPage,
+        'offset'      => $offset,
+        'totalRows'   => $totalRows,
+        'hasPrev'     => $currentPage > 1,
+        'hasNext'     => $currentPage < $totalPages,
+        'pages'       => $pages,
+    ];
+}
+
+
+/**
+ * Render an invisible honeypot field to trap bots.
+ */
+function honeypot_field(): string {
+    return '<div class="d-none" aria-hidden="true">' .
+           '<label for="' . HONEYPOT_FIELD . '">Ne pas remplir</label>' .
+           '<input type="text" id="' . HONEYPOT_FIELD . '" ' .
+           'name="' . HONEYPOT_FIELD . '" ' .
+           'tabindex="-1" autocomplete="off">' .
+           '</div>';
+}
+
+/**
+ * Returns true if the honeypot field was filled (bot detected).
+ */
+function honeypot_triggered(): bool {
+    return !empty($_POST[HONEYPOT_FIELD] ?? '');
+}

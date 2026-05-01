@@ -1,0 +1,3 @@
+# Deny ALL HTTP access to /config.
+# PHP `require`/`include` from the filesystem is unaffected.
+Require all denied

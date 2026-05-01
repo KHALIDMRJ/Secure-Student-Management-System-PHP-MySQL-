@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 
 require_once 'connexion.php';
 $pdo = connexion();
@@ -76,3 +77,7 @@ function e(?string $value): string {
 
 </body>
 </html>
+=======
+header('Location: /SecureStudentMS/public/');
+exit;
+>>>>>>> 7a57ca4 (Phase 3: add Bootstrap UI with sidebar, dark mode, search and toasts)

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l config.php)",
+      "Bash(php -l helpers.php)",
+      "Bash(php -l index.php)",
+      "Bash(php -l ajouter.php)",
+      "Bash(php -l modifier.php)",
+      "Bash(php -l config/config.php)",
+      "Bash(php -l includes/helpers.php)",
+      "Bash(php -l includes/header.php)",
+      "Bash(php -l includes/footer.php)",
+      "Bash(php -l public/index.php)"
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+# =========================================================
+# Apache root hardening — Gestion des étudiants
+# Apache 2.4 (XAMPP on Windows) syntax
+# =========================================================
+
+# Disable directory listing
+Options -Indexes
+
+# Force UTF-8 charset on responses missing one
+AddDefaultCharset UTF-8
+
+# Hide Apache version / module list in error pages
+ServerSignature Off
+
+# Default file served when a directory is requested
+DirectoryIndex index.php
+
+# Block direct access to sensitive file types (dumps, logs, env files, backups)
+<FilesMatch "\.(sql|log|md|sh|env|git|bak|tmp)$">
+    Require all denied
+</FilesMatch>
+
+# Block any dotfile (.htaccess, .env, .git, .DS_Store, ...)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block obvious SQL keywords appearing in the query string.
+# Legitimate routes (?page=index|ajouter|modifier|supprimer, ?ajout=ok, ?id=NN)
+# do not contain any of these tokens, so this is safe.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} (union|select|insert|drop|delete|update|cast|exec|declare) [NC]
+    RewriteRule .* - [F,L]
+</IfModule>

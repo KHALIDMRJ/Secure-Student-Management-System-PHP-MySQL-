@@ -1,0 +1,3 @@
+# Deny ALL HTTP access to /pages.
+# Pages must be reached via the front controller (public/index.php).
+Require all denied

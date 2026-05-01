@@ -9,6 +9,13 @@ declare(strict_types=1);
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/helpers.php';
 
+// Security: send hardened HTTP headers BEFORE any HTML output.
+require_once __DIR__ . '/security.php';
+send_security_headers();
+
+// CSP nonce for inline / first-party <script> tags below.
+$cspNonce = $_SERVER['CSP_NONCE'] ?? '';
+
 $pageTitle  = $pageTitle  ?? '';
 $breadcrumb = $breadcrumb ?? null;
 

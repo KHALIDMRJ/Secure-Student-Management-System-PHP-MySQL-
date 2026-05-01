@@ -1,8 +1,15 @@
 <?php
 declare(strict_types=1);
 
-session_start();
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/security.php';
+require_once __DIR__ . '/../includes/rate_limiter.php';
+
+// Session must be configured BEFORE session_start().
+configure_session();
+session_start();
+prevent_session_fixation();
+validate_session_integrity();
 
 $pageTitle  = 'Modifier un étudiant';
 $breadcrumb = 'Modifier';
@@ -27,8 +34,7 @@ try {
     $etudiant = $stmt->fetch();
 } catch (PDOException $e) {
     error_log('SELECT etudiant by id : ' . $e->getMessage());
-    http_response_code(500);
-    exit('Erreur interne du serveur.');
+    abort(500);
 }
 
 if (!$etudiant) {
@@ -45,23 +51,33 @@ $old = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CSRF check
-    if (!csrf_token_verify()) {
-        http_response_code(403);
-        exit('Jeton CSRF invalide.');
+    // 1. Rate limiting
+    if (rate_limit_exceeded('edit_student', RATE_LIMIT_EDIT, RATE_LIMIT_WINDOW)) {
+        abort(429, 'Trop de tentatives. Veuillez patienter 5 minutes.');
     }
 
-    // Validate posted data
+    // 2. Honeypot — silent fake success
+    if (honeypot_triggered()) {
+        error_log('Honeypot triggered on modifier.php from ' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+        redirect('?page=index&modifier=ok');
+    }
+
+    // 3. CSRF
+    if (!csrf_token_verify()) {
+        abort(403, 'Jeton CSRF invalide.');
+    }
+
+    // 4. Validate posted data
     $result = validate_student($_POST);
     $errors = $result['errors'];
     $old    = $result['clean'];
 
-    // Duplicate email check (excluding current student)
+    // 5. Duplicate email check (excluding current student)
     if (empty($errors) && is_email_taken($pdo, $old['email'], $id)) {
         $errors[] = "Cette adresse email est déjà utilisée par un autre étudiant.";
     }
 
-    // Apply update
+    // 6. Apply update
     if (empty($errors)) {
         try {
             $sql = 'UPDATE etudiants
@@ -76,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             csrf_token_renew();
+            rate_limit_reset('edit_student');
             redirect('?page=index&modifier=ok');
         } catch (PDOException $e) {
             error_log('UPDATE etudiant : ' . $e->getMessage());
@@ -112,6 +129,7 @@ require __DIR__ . '/../includes/header.php';
 
                         <form method="post" action="?page=modifier&id=<?= e((string)$id) ?>" autocomplete="off" novalidate>
                             <?= csrf_token_field() ?>
+                            <?= honeypot_field() ?>
                             <input type="hidden" name="id" value="<?= e((string)$id) ?>">
 
                             <div class="row g-3">

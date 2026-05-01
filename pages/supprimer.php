@@ -1,8 +1,15 @@
 <?php
 declare(strict_types=1);
 
-session_start();
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/security.php';
+require_once __DIR__ . '/../includes/rate_limiter.php';
+
+// Session must be configured BEFORE session_start().
+configure_session();
+session_start();
+prevent_session_fixation();
+validate_session_integrity();
 
 $pageTitle  = 'Supprimer un étudiant';
 $breadcrumb = 'Supprimer';
@@ -27,19 +34,24 @@ try {
     $etudiant = $stmt->fetch();
 } catch (PDOException $e) {
     error_log('SELECT etudiant for delete : ' . $e->getMessage());
-    http_response_code(500);
-    exit('Erreur interne du serveur.');
+    abort(500);
 }
 
 if (!$etudiant) {
     redirect('?page=index');
 }
 
-// On POST: verify CSRF then delete
+// On POST: rate-limit, then verify CSRF, then delete.
+// No honeypot here — there are no free-text inputs to bait a bot.
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // 1. Rate limiting (stricter than add/edit)
+    if (rate_limit_exceeded('delete_student', RATE_LIMIT_DELETE, RATE_LIMIT_WINDOW)) {
+        abort(429, 'Trop de tentatives. Veuillez patienter 5 minutes.');
+    }
+
+    // 2. CSRF
     if (!csrf_token_verify()) {
-        http_response_code(403);
-        exit('Jeton CSRF invalide.');
+        abort(403, 'Jeton CSRF invalide.');
     }
 
     try {
@@ -48,11 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute();
 
         csrf_token_renew();
+        rate_limit_reset('delete_student');
         redirect('?page=index&supprimer=ok');
     } catch (PDOException $e) {
         error_log('DELETE etudiant : ' . $e->getMessage());
-        http_response_code(500);
-        exit('Erreur interne du serveur.');
+        abort(500);
     }
 }
 

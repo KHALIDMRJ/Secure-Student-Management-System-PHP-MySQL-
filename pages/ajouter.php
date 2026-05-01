@@ -1,8 +1,15 @@
 <?php
 declare(strict_types=1);
 
-session_start();
 require_once __DIR__ . '/../includes/helpers.php';
+require_once __DIR__ . '/../includes/security.php';
+require_once __DIR__ . '/../includes/rate_limiter.php';
+
+// Session must be configured BEFORE session_start().
+configure_session();
+session_start();
+prevent_session_fixation();
+validate_session_integrity();
 
 $pageTitle  = 'Ajouter un étudiant';
 $breadcrumb = 'Ajouter';
@@ -11,23 +18,34 @@ $errors     = [];
 $old        = ['nom' => '', 'prenom' => '', 'email' => '', 'filieres' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // CSRF check
-    if (!csrf_token_verify()) {
-        http_response_code(403);
-        exit('Jeton CSRF invalide.');
+    // 1. Rate limiting (per IP, per action)
+    if (rate_limit_exceeded('add_student', RATE_LIMIT_ADD, RATE_LIMIT_WINDOW)) {
+        abort(429, 'Trop de tentatives. Veuillez patienter 5 minutes.');
     }
 
-    // Validate inputs
+    // 2. Honeypot — bots fill it; humans never see it. Fake-success on hit
+    //    so the bot believes it succeeded and stops retrying.
+    if (honeypot_triggered()) {
+        error_log('Honeypot triggered on ajouter.php from ' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+        redirect('?page=index&ajout=ok');
+    }
+
+    // 3. CSRF
+    if (!csrf_token_verify()) {
+        abort(403, 'Jeton CSRF invalide.');
+    }
+
+    // 4. Validate inputs
     $result = validate_student($_POST);
     $errors = $result['errors'];
     $old    = $result['clean'];
 
-    // Duplicate email check
+    // 5. Duplicate email check
     if (empty($errors) && is_email_taken($pdo, $old['email'])) {
         $errors[] = "Cette adresse email est déjà utilisée.";
     }
 
-    // Persist if everything is clean
+    // 6. Persist if everything is clean
     if (empty($errors)) {
         try {
             $sql  = 'INSERT INTO etudiants (nom, prenom, email, filieres)
@@ -40,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             csrf_token_renew();
+            rate_limit_reset('add_student');
             redirect('?page=index&ajout=ok');
         } catch (PDOException $e) {
             error_log('INSERT etudiant : ' . $e->getMessage());
@@ -76,6 +95,7 @@ require __DIR__ . '/../includes/header.php';
 
                         <form method="post" action="?page=ajouter" autocomplete="off" novalidate>
                             <?= csrf_token_field() ?>
+                            <?= honeypot_field() ?>
 
                             <div class="row g-3">
                                 <div class="col-md-6">

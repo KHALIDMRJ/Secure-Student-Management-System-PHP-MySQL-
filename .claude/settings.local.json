@@ -10,7 +10,8 @@
       "Bash(php -l includes/helpers.php)",
       "Bash(php -l includes/header.php)",
       "Bash(php -l includes/footer.php)",
-      "Bash(php -l public/index.php)"
+      "Bash(php -l public/index.php)",
+      "Bash(php *)"
     ]
   }
 }

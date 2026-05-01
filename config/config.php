@@ -17,7 +17,7 @@ const DB_CHARSET = 'utf8mb4';
 // Application settings
 const APP_NAME = 'Gestion des étudiants';
 const APP_ENV  = 'development'; // 'development' | 'production'
-const BASE_URL = '/TP_CRUD_en_PHP_MySQL_MORJAN_KHALID/public/';
+const BASE_URL = '/SecureStudentMS/public/';
 
 // Filesystem roots — every path uses __DIR__, no relative '../' guessing elsewhere
 const APP_ROOT      = __DIR__ . '/..';

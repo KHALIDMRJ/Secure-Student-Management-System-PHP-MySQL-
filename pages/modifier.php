@@ -4,8 +4,9 @@ declare(strict_types=1);
 session_start();
 require_once __DIR__ . '/../includes/helpers.php';
 
-$pageTitle = 'Modifier un étudiant';
-$pdo       = getPDO();
+$pageTitle  = 'Modifier un étudiant';
+$breadcrumb = 'Modifier';
+$pdo        = getPDO();
 
 // Resolve the student ID from POST (preferred) or GET
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -86,54 +87,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require __DIR__ . '/../includes/header.php';
 ?>
-        <div class="page-header">
-            <h1>Modifier un étudiant <small style="color:#6b7280;font-weight:400">(ID #<?= e((string)$id) ?>)</small></h1>
-        </div>
-
-        <div class="form-card">
-            <?php if (!empty($errors)): ?>
-                <div class="error-list">
-                    <ul>
-                        <?php foreach ($errors as $err): ?>
-                            <li><?= e($err) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <form method="post" action="?page=modifier&id=<?= e((string)$id) ?>" autocomplete="off">
-                <?= csrf_token_field() ?>
-                <input type="hidden" name="id" value="<?= e((string)$id) ?>">
-
-                <div class="form-group">
-                    <label for="nom">Nom</label>
-                    <input type="text" id="nom" name="nom" maxlength="100" required
-                           value="<?= e($old['nom']) ?>">
+                <div class="page-header">
+                    <div>
+                        <h2>Modifier un étudiant</h2>
+                        <div class="subtitle">Identifiant&nbsp;: #<?= e((string)$id) ?></div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="prenom">Prénom</label>
-                    <input type="text" id="prenom" name="prenom" maxlength="100" required
-                           value="<?= e($old['prenom']) ?>">
-                </div>
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-pencil-square me-2 text-primary"></i>Informations de l'étudiant</h5>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($errors)): ?>
+                            <div class="alert alert-danger" role="alert">
+                                <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>Veuillez corriger les erreurs suivantes :</strong>
+                                <ul>
+                                    <?php foreach ($errors as $err): ?>
+                                        <li><?= e($err) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" maxlength="150" required
-                           value="<?= e($old['email']) ?>">
-                </div>
+                        <form method="post" action="?page=modifier&id=<?= e((string)$id) ?>" autocomplete="off" novalidate>
+                            <?= csrf_token_field() ?>
+                            <input type="hidden" name="id" value="<?= e((string)$id) ?>">
 
-                <div class="form-group">
-                    <label for="filieres">Filière</label>
-                    <input type="text" id="filieres" name="filieres" maxlength="100" required
-                           value="<?= e($old['filieres']) ?>">
-                </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="nom" class="form-label">Nom</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" id="nom" name="nom" class="form-control"
+                                               maxlength="100" required value="<?= e($old['nom']) ?>">
+                                    </div>
+                                </div>
 
-                <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                    <a href="?page=index" class="btn btn-secondary">Annuler</a>
+                                <div class="col-md-6">
+                                    <label for="prenom" class="form-label">Prénom</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                        <input type="text" id="prenom" name="prenom" class="form-control"
+                                               maxlength="100" required value="<?= e($old['prenom']) ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="email" class="form-label">Email</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                                        <input type="email" id="email" name="email" class="form-control"
+                                               maxlength="150" required value="<?= e($old['email']) ?>">
+                                    </div>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="filieres" class="form-label">Filière</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
+                                        <input type="text" id="filieres" name="filieres" class="form-control"
+                                               maxlength="100" required value="<?= e($old['filieres']) ?>">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i>
+                                    <span>Enregistrer les modifications</span>
+                                </button>
+                                <a href="?page=index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-lg"></i>
+                                    <span>Annuler</span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
-        </div>
 <?php
 require __DIR__ . '/../includes/footer.php';

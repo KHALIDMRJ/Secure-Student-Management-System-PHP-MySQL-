@@ -4,8 +4,9 @@ declare(strict_types=1);
 session_start();
 require_once __DIR__ . '/../includes/helpers.php';
 
-$pageTitle = 'Supprimer un étudiant';
-$pdo       = getPDO();
+$pageTitle  = 'Supprimer un étudiant';
+$breadcrumb = 'Supprimer';
+$pdo        = getPDO();
 
 // Resolve the student ID from POST (preferred) or GET
 $id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -57,25 +58,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require __DIR__ . '/../includes/header.php';
 ?>
-        <div class="page-header">
-            <h1>Confirmer la suppression</h1>
-        </div>
-
-        <div class="confirmation-box">
-            <p>Vous êtes sur le point de supprimer l'étudiant suivant :</p>
-            <dl>
-                <dt>Nom</dt>     <dd><?= e($etudiant['nom']) ?> <?= e($etudiant['prenom']) ?></dd>
-                <dt>Email</dt>   <dd><?= e($etudiant['email']) ?></dd>
-                <dt>Filière</dt> <dd><?= e($etudiant['filieres']) ?></dd>
-            </dl>
-            <form method="post" action="?page=supprimer&id=<?= e((string)$etudiant['id']) ?>">
-                <?= csrf_token_field() ?>
-                <input type="hidden" name="id" value="<?= e((string)$etudiant['id']) ?>">
-                <div style="display:flex;gap:0.75rem;margin-top:1.5rem">
-                    <button type="submit" class="btn btn-danger">Confirmer la suppression</button>
-                    <a href="?page=index" class="btn btn-secondary">Annuler</a>
+                <div class="page-header">
+                    <div>
+                        <h2>Confirmer la suppression</h2>
+                        <div class="subtitle">Cette action est définitive.</div>
+                    </div>
                 </div>
-            </form>
-        </div>
+
+                <div class="card confirmation-card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Suppression d'un étudiant</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert">
+                            Vous êtes sur le point de supprimer définitivement l'étudiant suivant.
+                            Cette opération ne peut pas être annulée.
+                        </div>
+
+                        <ul class="detail-list">
+                            <li>
+                                <span class="label">Nom complet</span>
+                                <span class="value"><?= e($etudiant['nom']) ?> <?= e($etudiant['prenom']) ?></span>
+                            </li>
+                            <li>
+                                <span class="label">Email</span>
+                                <span class="value"><?= e($etudiant['email']) ?></span>
+                            </li>
+                            <li>
+                                <span class="label">Filière</span>
+                                <span class="value"><?= e($etudiant['filieres']) ?></span>
+                            </li>
+                        </ul>
+
+                        <form method="post"
+                              action="?page=supprimer&id=<?= e((string)$etudiant['id']) ?>"
+                              data-confirm="Êtes-vous certain de vouloir supprimer cet étudiant ?">
+                            <?= csrf_token_field() ?>
+                            <input type="hidden" name="id" value="<?= e((string)$etudiant['id']) ?>">
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                    <span>Confirmer la suppression</span>
+                                </button>
+                                <a href="?page=index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i>
+                                    <span>Annuler</span>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
 <?php
 require __DIR__ . '/../includes/footer.php';

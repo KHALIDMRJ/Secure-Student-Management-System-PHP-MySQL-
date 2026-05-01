@@ -677,3 +677,216 @@ a { text-decoration: none; }
 
     .toast { min-width: 240px; max-width: calc(100vw - 2rem); }
 }
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;  /* pushes left and right apart */
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* === DARK MODE === */
+body.dark-mode {
+    --body-bg:    #0f172a;
+    --card-bg:    #1e293b;
+    --text-primary: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border:     #334155;
+}
+
+body.dark-mode .sidebar {
+    background: #0f172a;
+    border-right: 1px solid #334155;
+}
+
+body.dark-mode .top-bar {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+body.dark-mode .card {
+    background: #1e293b;
+    border: 1px solid #334155;
+}
+
+body.dark-mode .card-header {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+}
+
+body.dark-mode .table tbody tr:hover {
+    background: #263548;
+}
+
+body.dark-mode .table tbody td {
+    border-bottom-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-control {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-control:focus {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+body.dark-mode .input-group-text {
+    background: #1e293b;
+    border-color: #334155;
+    color: #818cf8;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #94a3b8;
+    border-color: #334155;
+}
+
+body.dark-mode .badge-filiere {
+    background: #312e81;
+    color: #a5b4fc;
+}
+
+body.dark-mode .student-avatar {
+    background: #312e81;
+    color: #a5b4fc;
+}
+
+body.dark-mode .alert-success {
+    background: #064e3b;
+    color: #6ee7b7;
+}
+
+body.dark-mode .alert-danger {
+    background: #450a0a;
+    color: #fca5a5;
+}
+
+/* =========================================================
+   DARK MODE OVERRIDES (high specificity, !important)
+   Appended last so they win over Bootstrap defaults and any
+   earlier rules. Toggled by body.dark-mode in app.js.
+   ========================================================= */
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .main-content {
+    background-color: #0f172a !important;
+}
+
+body.dark-mode .top-bar {
+    background-color: #1e293b !important;
+    border-bottom-color: #334155 !important;
+}
+
+body.dark-mode .card,
+body.dark-mode .card-header,
+body.dark-mode .card-body {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .table {
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .table thead th {
+    background-color: #312e81 !important;
+}
+
+body.dark-mode .table tbody tr {
+    background-color: #1e293b !important;
+    border-bottom-color: #334155 !important;
+}
+
+body.dark-mode .table tbody tr:hover {
+    background-color: #263548 !important;
+}
+
+body.dark-mode .table tbody td {
+    border-bottom-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .form-control::placeholder {
+    color: #64748b !important;
+}
+
+body.dark-mode .input-group-text {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #818cf8 !important;
+}
+
+body.dark-mode .btn-outline-secondary {
+    color: #94a3b8 !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode .btn-outline-secondary:hover {
+    background-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark-mode .badge-filiere {
+    background-color: #312e81 !important;
+    color: #a5b4fc !important;
+}
+
+body.dark-mode .student-avatar {
+    background-color: #312e81 !important;
+    color: #a5b4fc !important;
+}
+
+body.dark-mode .breadcrumb-item a {
+    color: #818cf8 !important;
+}
+
+body.dark-mode .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .alert-success {
+    background-color: #064e3b !important;
+    color: #6ee7b7 !important;
+    border-left-color: #10b981 !important;
+}
+
+body.dark-mode .alert-danger {
+    background-color: #450a0a !important;
+    color: #fca5a5 !important;
+    border-left-color: #ef4444 !important;
+}
+
+body.dark-mode .confirmation-card,
+body.dark-mode .form-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .empty-state {
+    color: #94a3b8 !important;
+}
+
+/* Smooth transition on theme switch */
+body {
+    transition: background-color 0.25s ease, color 0.2s ease;
+}

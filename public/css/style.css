@@ -1400,3 +1400,453 @@ body.dark-mode .stat-icon--danger {
     background: rgba(248, 81, 73, 0.15) !important;
     color: var(--dm-danger-text) !important;
 }
+
+/* =========================================================
+   PHASE 8 — SQL Console (full-power runner)
+
+   Editor: Catppuccin Mocha dark surface (#1e1e2e / #181825 / #cdd6f4)
+   Badges: query-type chips with semantic colors; destructive pulses
+   Modal:  Bootstrap modal with editor-matching SQL preview
+   ========================================================= */
+
+/* === EXAMPLE / HISTORY CHIPS ============================================== */
+.sql-examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+}
+.sql-examples-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-right: 0.25rem;
+}
+.sql-example-chip {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+}
+.sql-example-chip:hover {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+.sql-example-chip > i {
+    color: var(--warning);
+    font-size: 0.75rem;
+}
+
+/* History chip — same shape as example chip, plus a mini type badge inside */
+.sql-history-chip {
+    max-width: 360px;
+    padding: 0.3rem 0.6rem 0.3rem 0.4rem;
+}
+.sql-history-chip .sql-history-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    max-width: 280px;
+}
+.sql-history-chip:hover .sql-history-text { color: var(--primary-dark); }
+
+/* === QUERY-TYPE BADGE ===================================================== */
+.badge-query-type {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, monospace;
+    line-height: 1.4;
+}
+.badge-query-type-mini {
+    display: inline-flex;
+    padding: 0.08rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', monospace;
+    margin-right: 0.45rem;
+    line-height: 1.5;
+}
+
+/* Color modifiers — apply to BOTH badge sizes via the same suffix */
+.badge-query-type--select,
+.badge-query-type--show,
+.badge-query-type--describe,
+.badge-query-type--explain { background: #ede9fe; color: #4338ca; }
+.badge-query-type--insert,
+.badge-query-type--create  { background: #d1fae5; color: #047857; }
+.badge-query-type--update,
+.badge-query-type--alter   { background: #fef3c7; color: #92400e; }
+.badge-query-type--delete,
+.badge-query-type--drop,
+.badge-query-type--truncate{ background: #fee2e2; color: #991b1b; }
+.badge-query-type--other   { background: #f3f4f6; color: #374151; }
+
+.danger-pulse {
+    animation: sql-pulse 1s infinite alternate;
+}
+@keyframes sql-pulse {
+    from { opacity: 1; }
+    to   { opacity: 0.5; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .danger-pulse { animation: none; }
+}
+
+/* === EDITOR CARD — Catppuccin Mocha ====================================== */
+.sql-editor-card {
+    background: #1e1e2e;
+    border: 1px solid #313244;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(30, 27, 75, 0.12);
+}
+.sql-editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1rem;
+    background: #181825;
+    border-bottom: 1px solid #313244;
+    color: #cdd6f4;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, Monaco, 'Courier New', monospace;
+    font-size: 0.78rem;
+}
+.sql-editor-title { display: inline-flex; align-items: center; color: #94a3d6; }
+.sql-editor-title i { color: #f5c2e7; font-size: 0.95rem; }
+.sql-editor-actions { display: inline-flex; gap: 0.25rem; }
+
+.btn-editor {
+    background: transparent;
+    border: 1px solid transparent;
+    color: #94a3d6;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.12s ease;
+}
+.btn-editor:hover {
+    background: #313244;
+    color: #cdd6f4;
+    border-color: #45475a;
+}
+.btn-editor:focus-visible {
+    outline: 2px solid #89b4fa;
+    outline-offset: 1px;
+}
+
+.sql-editor-body {
+    display: flex;
+    background: #1e1e2e;
+    align-items: stretch;
+}
+.sql-editor-gutter {
+    width: 48px;
+    flex-shrink: 0;
+    padding: 0.85rem 0.65rem 0.85rem 0.85rem;
+    text-align: right;
+    color: #585b70;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, Monaco, monospace;
+    font-size: 0.85rem;
+    line-height: 1.55;
+    background: #181825;
+    border-right: 1px solid #313244;
+    user-select: none;
+    white-space: pre;
+    overflow: hidden;
+}
+.sql-editor {
+    flex: 1;
+    min-width: 0;
+    background: #1e1e2e;
+    border: none;
+    outline: none;
+    color: #cdd6f4;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, Monaco, 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    padding: 0.85rem 1rem;
+    resize: none;
+    min-height: 180px;
+    tab-size: 4;
+    -moz-tab-size: 4;
+    overflow: hidden; /* JS handles auto-grow */
+    caret-color: #f5c2e7;
+}
+.sql-editor::placeholder { color: #585b70; font-style: italic; }
+.sql-editor:focus { background: #1e1e2e; color: #cdd6f4; box-shadow: none; }
+.sql-editor::selection      { background: rgba(245, 194, 231, 0.30); color: #cdd6f4; }
+.sql-editor::-moz-selection { background: rgba(245, 194, 231, 0.30); color: #cdd6f4; }
+
+.sql-editor-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1rem;
+    background: #181825;
+    border-top: 1px solid #313244;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.sql-editor-hint {
+    color: #94a3d6;
+    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+.sql-editor-hint i { color: #a6e3a1; }
+.sql-editor-hint strong { color: #cdd6f4; font-weight: 600; }
+.sql-editor-shortcut kbd {
+    background: #313244;
+    border: 1px solid #45475a;
+    color: #cdd6f4;
+    border-radius: 4px;
+    padding: 0.05rem 0.35rem;
+    font-size: 0.72rem;
+    font-family: inherit;
+}
+
+/* === RESULT TABLE & SUMMARY ============================================== */
+.results-wrapper {
+    max-height: 400px;
+    overflow-y: auto;
+    border-radius: 0 0 12px 12px;
+}
+.sql-result-table {
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, Monaco, monospace;
+    font-size: 0.82rem;
+    margin-bottom: 0;
+}
+.sql-result-table thead th {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    white-space: nowrap;
+}
+.sql-result-table tbody td {
+    vertical-align: middle;
+    white-space: nowrap;
+    color: var(--text-primary);
+}
+.sql-row-num {
+    width: 48px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+.sql-null {
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 0.78rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Summary panel for INSERT / UPDATE / DELETE / DDL */
+.sql-result-summary {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    align-items: center;
+}
+.sql-result-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+.sql-result-icon--insert,
+.sql-result-icon--create  { background: #d1fae5; color: #047857; }
+.sql-result-icon--update,
+.sql-result-icon--alter   { background: #fef3c7; color: #92400e; }
+.sql-result-icon--delete,
+.sql-result-icon--drop,
+.sql-result-icon--truncate{ background: #fee2e2; color: #991b1b; }
+.sql-result-icon--other   { background: #f3f4f6; color: #374151; }
+
+.sql-result-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.02rem;
+}
+.sql-result-meta {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-top: 0.2rem;
+}
+.sql-result-meta code {
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: ui-monospace, 'JetBrains Mono', monospace;
+}
+
+/* === CONFIRMATION MODAL ================================================== */
+.sql-confirm-modal {
+    border-radius: 14px;
+    border: 1px solid var(--border);
+}
+.sql-confirm-modal .modal-header {
+    border-bottom: 1px solid var(--border);
+}
+.sql-confirm-modal .modal-footer {
+    border-top: 1px solid var(--border);
+}
+/* The SQL preview inside the modal echoes the editor's palette, so the */
+/* user instantly recognises "this is the SQL you're about to run".     */
+.sql-confirm-preview {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    max-height: 220px;
+    overflow: auto;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: 1px solid #313244;
+}
+
+/* === DARK MODE ADJUSTMENTS ===============================================
+   The editor is dark in BOTH themes (it's a code surface, not content),
+   so we only adjust chrome around it.                                    */
+body.dark-mode .sql-example-chip {
+    background: var(--dm-bg-surface) !important;
+    color: var(--dm-text-secondary) !important;
+    border-color: var(--dm-border) !important;
+}
+body.dark-mode .sql-example-chip:hover {
+    background: var(--dm-accent-bg) !important;
+    color: var(--dm-accent-hover) !important;
+    border-color: var(--dm-accent) !important;
+}
+body.dark-mode .sql-history-chip .sql-history-text {
+    color: var(--dm-text-muted) !important;
+}
+body.dark-mode .sql-history-chip:hover .sql-history-text {
+    color: var(--dm-accent-hover) !important;
+}
+body.dark-mode .sql-editor-card {
+    border-color: var(--dm-border) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+body.dark-mode .sql-result-table thead th {
+    background: var(--dm-bg-elevated) !important;
+    color: var(--dm-text-secondary) !important;
+}
+body.dark-mode .sql-result-table tbody td {
+    color: var(--dm-text-primary) !important;
+}
+body.dark-mode .sql-row-num,
+body.dark-mode .sql-null {
+    color: var(--dm-text-muted) !important;
+}
+body.dark-mode .sql-result-title {
+    color: var(--dm-text-primary) !important;
+}
+body.dark-mode .sql-result-meta {
+    color: var(--dm-text-muted) !important;
+}
+body.dark-mode .sql-result-meta code {
+    background: var(--dm-accent-bg) !important;
+    color: var(--dm-accent-hover) !important;
+}
+
+/* Dark-mode badge color bumps (saturated text on translucent backgrounds) */
+body.dark-mode .badge-query-type--select,
+body.dark-mode .badge-query-type--show,
+body.dark-mode .badge-query-type--describe,
+body.dark-mode .badge-query-type--explain {
+    background: rgba(129, 140, 248, 0.15) !important;
+    color: #a5b4fc !important;
+}
+body.dark-mode .badge-query-type--insert,
+body.dark-mode .badge-query-type--create {
+    background: rgba(46, 160, 67, 0.18) !important;
+    color: #6ee7b7 !important;
+}
+body.dark-mode .badge-query-type--update,
+body.dark-mode .badge-query-type--alter {
+    background: rgba(210, 153, 34, 0.18) !important;
+    color: #fcd34d !important;
+}
+body.dark-mode .badge-query-type--delete,
+body.dark-mode .badge-query-type--drop,
+body.dark-mode .badge-query-type--truncate {
+    background: rgba(248, 81, 73, 0.18) !important;
+    color: #fca5a5 !important;
+}
+body.dark-mode .badge-query-type--other {
+    background: var(--dm-bg-elevated) !important;
+    color: var(--dm-text-secondary) !important;
+}
+
+body.dark-mode .sql-confirm-modal {
+    background: var(--dm-bg-surface) !important;
+    border-color: var(--dm-border) !important;
+    color: var(--dm-text-primary) !important;
+}
+body.dark-mode .sql-confirm-modal .modal-header,
+body.dark-mode .sql-confirm-modal .modal-footer {
+    border-color: var(--dm-border) !important;
+}
+body.dark-mode .modal-backdrop.show { opacity: 0.7 !important; }
+
+/* Mobile adjustments */
+@media (max-width: 575.98px) {
+    .sql-editor-gutter   { width: 36px; padding: 0.85rem 0.4rem 0.85rem 0.6rem; }
+    .sql-editor          { font-size: 0.82rem; padding: 0.75rem 0.85rem; }
+    .sql-editor-shortcut { display: none; }
+    .sql-history-chip    { max-width: 100%; }
+    .sql-history-chip .sql-history-text { max-width: 200px; }
+}

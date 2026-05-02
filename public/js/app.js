@@ -504,3 +504,201 @@ document.addEventListener('DOMContentLoaded', function () {
         buildMonthlyChart();
     });
 })();
+
+/* =========================================================
+   Phase 8 — SQL Console (full-power runner)
+
+   Editor enhancements (CSP-safe — no inline JS in PHP):
+   - Live line-number gutter
+   - Auto-grow textarea height
+   - Tab key inserts 4 spaces (no focus loss)
+   - Ctrl/Cmd+Enter executes (uses requestSubmit so the destructive
+     check still fires)
+   - Clear / Copy / Example-fill / History-fill chips
+   - Bootstrap modal confirmation for DELETE / DROP / TRUNCATE / ALTER
+   - Client-side CSV export of the result table
+
+   The IIFE no-ops on every page that doesn't have the editor.
+   ========================================================= */
+(function () {
+    const editor = document.getElementById('sqlEditor');
+    if (!editor) return;
+
+    const form           = document.getElementById('sqlForm');
+    const lineNums       = document.getElementById('lineNumbers');
+    const clearBtn       = document.getElementById('clearBtn');
+    const copyBtn        = document.getElementById('copyBtn');
+    const exportBtn      = document.getElementById('exportCsv');
+    const exampleBtns    = document.querySelectorAll('.sql-example-chip');
+    const confirmModalEl = document.getElementById('sqlConfirmModal');
+    const confirmBadge   = document.getElementById('sqlConfirmBadge');
+    const confirmPreview = document.getElementById('sqlConfirmPreview');
+    const confirmExecBtn = document.getElementById('sqlConfirmExecuteBtn');
+
+    // Statements that require confirmation before execution.
+    const DESTRUCTIVE_RE = /^\s*(DELETE|DROP|TRUNCATE|ALTER)\b/i;
+
+    // Map keyword → badge color modifier (mirrors PHP's query_type_meta)
+    const TYPE_CLASS = {
+        DELETE: 'delete', DROP: 'drop', TRUNCATE: 'truncate', ALTER: 'alter'
+    };
+
+    /* ----- Live line-number gutter ----- */
+    function updateLineNumbers() {
+        const lines = (editor.value.match(/\n/g) || []).length + 1;
+        let out = '';
+        for (let i = 1; i <= lines; i++) {
+            out += i + (i < lines ? '\n' : '');
+        }
+        if (lineNums) lineNums.textContent = out;
+    }
+
+    /* ----- Auto-grow height to fit content ----- */
+    function autoGrow() {
+        editor.style.height = 'auto';
+        editor.style.height = editor.scrollHeight + 'px';
+    }
+
+    function refresh() { updateLineNumbers(); autoGrow(); }
+
+    editor.addEventListener('input', refresh);
+    refresh(); // initial sizing for any pre-filled value
+
+    /* ----- Keyboard shortcuts -----
+       Tab → 4 spaces; Ctrl/Cmd+Enter → submit (via requestSubmit so the
+       destructive-query interceptor below still runs). */
+    editor.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const start = editor.selectionStart;
+            const end   = editor.selectionEnd;
+            editor.value = editor.value.substring(0, start)
+                         + '    '
+                         + editor.value.substring(end);
+            editor.selectionStart = editor.selectionEnd = start + 4;
+            refresh();
+            return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            if (!form) return;
+            if (typeof form.requestSubmit === 'function') {
+                form.requestSubmit();           // fires submit event → confirmation flow
+            } else {
+                form.dispatchEvent(new Event('submit', { cancelable: true }));
+                form.submit();                  // fallback for very old browsers
+            }
+        }
+    });
+
+    /* ----- Destructive-query interceptor -----
+       On submit, peek at the first SQL keyword. If it's DELETE / DROP /
+       TRUNCATE / ALTER, show the Bootstrap modal instead of submitting.
+       The modal's "Execute anyway" button calls form.submit() directly,
+       which bypasses this listener (no event fired) so we don't loop. */
+    if (form) {
+        form.addEventListener('submit', function (e) {
+            const sql = (editor.value || '').trim();
+            const m   = sql.match(DESTRUCTIVE_RE);
+            if (!m) return; // safe — let the form submit normally
+
+            e.preventDefault();
+            const kw = m[1].toUpperCase();
+
+            if (confirmBadge) {
+                confirmBadge.textContent = kw;
+                // Reset & re-apply badge color so the badge matches the keyword
+                confirmBadge.className = 'badge-query-type danger-pulse badge-query-type--' +
+                                         (TYPE_CLASS[kw] || 'other');
+            }
+            if (confirmPreview) confirmPreview.textContent = sql;
+
+            if (window.bootstrap && window.bootstrap.Modal && confirmModalEl) {
+                const modal = window.bootstrap.Modal.getOrCreateInstance(confirmModalEl);
+                modal.show();
+            } else {
+                // Fallback if Bootstrap modal isn't available
+                if (window.confirm('Cette requête est destructive. Continuer ?')) {
+                    form.submit();
+                }
+            }
+        });
+    }
+
+    if (confirmExecBtn) {
+        confirmExecBtn.addEventListener('click', function () {
+            if (confirmModalEl && window.bootstrap && window.bootstrap.Modal) {
+                const modal = window.bootstrap.Modal.getInstance(confirmModalEl);
+                if (modal) modal.hide();
+            }
+            // form.submit() does NOT fire the submit event → no infinite loop.
+            if (form) form.submit();
+        });
+    }
+
+    /* ----- Clear button ----- */
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            editor.value = '';
+            editor.focus();
+            refresh();
+        });
+    }
+
+    /* ----- Copy button ----- */
+    if (copyBtn && navigator.clipboard) {
+        copyBtn.addEventListener('click', function () {
+            if (!editor.value) return;
+            navigator.clipboard.writeText(editor.value).then(function () {
+                const icon = copyBtn.querySelector('i');
+                if (!icon) return;
+                icon.className = 'bi bi-check-lg';
+                setTimeout(function () { icon.className = 'bi bi-clipboard'; }, 1800);
+            }).catch(function () { /* clipboard blocked — silent */ });
+        });
+    }
+
+    /* ----- Example / history chips: paste into editor & focus ----- */
+    exampleBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            editor.value = btn.dataset.sql || '';
+            editor.focus();
+            refresh();
+            editor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
+
+    /* ----- CSV export from the result table ----- */
+    if (exportBtn) {
+        exportBtn.addEventListener('click', function () {
+            const table = document.getElementById('sqlResultTable');
+            if (!table) return;
+
+            const rows = table.querySelectorAll('tr');
+            const csv  = [];
+            rows.forEach(function (row) {
+                const cells = row.querySelectorAll('th, td');
+                const line  = [];
+                cells.forEach(function (cell) {
+                    let v = (cell.textContent || '').trim();
+                    line.push('"' + v.replace(/"/g, '""') + '"');
+                });
+                csv.push(line.join(','));
+            });
+
+            // BOM so Excel opens UTF-8 correctly.
+            const blob = new Blob(['﻿' + csv.join('\n')], {
+                type: 'text/csv;charset=utf-8;'
+            });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            const ts   = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+            a.href     = url;
+            a.download = 'query-' + ts + '.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+})();

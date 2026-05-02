@@ -60,6 +60,12 @@ if (isset($_GET['supprimer']) && $_GET['supprimer'] === 'ok') $flashes[] = ['typ
                         <span>Ajouter</span>
                     </a>
                 </li>
+                <li>
+                    <a class="<?= e(active_page('sql')) ?>" href="?page=sql">
+                        <i class="bi bi-terminal-fill"></i>
+                        <span>SQL Runner</span>
+                    </a>
+                </li>
             </ul>
             <div class="sidebar-footer">
                 &copy; 2025 Khalid MORJANE

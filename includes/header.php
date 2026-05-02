@@ -96,6 +96,29 @@ if (isset($_GET['supprimer']) && $_GET['supprimer'] === 'ok') $flashes[] = ['typ
         </div>
     </div>
     <div class="top-bar-right">
+        <?php
+        // Show the current admin chip + logout form when authenticated.
+        // The chip uses the admin's first initial so it scales well even
+        // for long names. Logout MUST be POST + CSRF (see pages/logout.php).
+        $__admin = function_exists('current_admin') ? current_admin() : null;
+        if ($__admin !== null):
+            $__display  = $__admin['full_name'] !== '' ? $__admin['full_name'] : $__admin['username'];
+            $__initial  = mb_strtoupper(mb_substr($__display, 0, 1));
+        ?>
+            <div class="user-chip" title="<?= e($__display) ?>">
+                <span class="user-avatar"><?= e($__initial) ?></span>
+                <span class="user-name d-none d-md-inline"><?= e($__display) ?></span>
+            </div>
+            <form method="post" action="?page=logout" class="d-inline-block ms-2">
+                <?= csrf_token_field() ?>
+                <button type="submit"
+                        class="btn btn-sm btn-outline-secondary"
+                        title="Déconnexion"
+                        aria-label="Déconnexion">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </form>
+        <?php endif; ?>
         <button id="darkModeToggle"
                 class="btn btn-sm btn-outline-secondary"
                 title="Changer le thème"

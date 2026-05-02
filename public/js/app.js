@@ -39,6 +39,14 @@ function applyDarkMode(enable, animate) {
         document.body.classList.toggle('dark-mode', enable);
     }
 
+    // Notify any chart / canvas / theme-aware listeners that the theme changed,
+    // so they can rebuild themselves with the new palette.
+    try {
+        document.dispatchEvent(new CustomEvent('themeChanged', { detail: { dark: enable } }));
+    } catch (e) {
+        /* CustomEvent not supported — non-fatal */
+    }
+
     const icon = document.getElementById('darkModeIcon');
     if (icon) {
         icon.className = enable ? 'bi bi-sun-fill' : 'bi bi-moon-stars-fill';
@@ -298,5 +306,201 @@ document.addEventListener('DOMContentLoaded', function () {
         el.addEventListener('change', function () {
             filterForm.submit();
         });
+    });
+})();
+
+/* =========================================================
+   Phase 6 — Dashboard charts (Chart.js)
+
+   Reads pre-encoded JSON from data-* attributes on #chartData
+   (no inline scripts, CSP-safe). Rebuilds both charts on the
+   `themeChanged` custom event so colors track the theme.
+   The IIFE no-ops on non-dashboard pages.
+   ========================================================= */
+(function () {
+    const chartDataEl = document.getElementById('chartData');
+    if (!chartDataEl || typeof Chart === 'undefined') return;
+
+    // Parse data once, fail-soft on malformed JSON
+    let filiereLabels = [];
+    let filiereData   = [];
+    let monthlyLabels = [];
+    let monthlyData   = [];
+    try {
+        filiereLabels = JSON.parse(chartDataEl.dataset.filiereLabels || '[]');
+        filiereData   = JSON.parse(chartDataEl.dataset.filiereData   || '[]');
+        monthlyLabels = JSON.parse(chartDataEl.dataset.monthlyLabels || '[]');
+        monthlyData   = JSON.parse(chartDataEl.dataset.monthlyData   || '[]');
+    } catch (e) {
+        console.error('Chart data malformed', e);
+        return;
+    }
+
+    let filiereChart = null;
+    let monthlyChart = null;
+
+    /* ----- Theme-aware color helpers ----- */
+    function isDark()      { return document.body.classList.contains('dark-mode'); }
+    function gridColor()   { return isDark() ? '#30363d' : '#e5e7eb'; }
+    function tickColor()   { return isDark() ? '#c9d1d9' : '#6b7280'; }
+    function accentColor() { return isDark() ? '#818cf8' : '#4f46e5'; }
+    function accentFill()  { return isDark() ? 'rgba(129,140,248,0.18)' : 'rgba(79,70,229,0.12)'; }
+
+    function tooltipOpts() {
+        return {
+            backgroundColor: isDark() ? '#1c2333' : '#1e1b4b',
+            titleColor: '#fff',
+            bodyColor: '#e2e8f0',
+            padding: 10,
+            cornerRadius: 8,
+            displayColors: false
+        };
+    }
+
+    /* Per-bar color picker: cycles through a 5-color palette
+       calibrated for each theme so bars stay distinguishable. */
+    function barColor(ctx) {
+        const i = ctx.dataIndex || 0;
+        const colors = isDark()
+            ? ['rgba(129,140,248,0.7)',
+               'rgba(63,185,80,0.7)',
+               'rgba(210,153,34,0.7)',
+               'rgba(248,81,73,0.7)',
+               'rgba(88,166,255,0.7)']
+            : ['rgba(79,70,229,0.75)',
+               'rgba(16,185,129,0.75)',
+               'rgba(245,158,11,0.75)',
+               'rgba(239,68,68,0.75)',
+               'rgba(59,130,246,0.75)'];
+        return colors[i % colors.length];
+    }
+
+    /* Apply theme-aware Chart.js global defaults (font, base color). */
+    function applyChartDefaults() {
+        if (!Chart || !Chart.defaults) return;
+        Chart.defaults.font.family = "'Inter', system-ui, -apple-system, sans-serif";
+        Chart.defaults.color = tickColor();
+    }
+
+    /* ----- Bar chart: students per filière ----- */
+    function buildFiliereChart() {
+        const canvas = document.getElementById('filiereChart');
+        if (!canvas || filiereLabels.length === 0) return;
+
+        // Destroy previous instance to prevent memory leaks on rebuild.
+        if (filiereChart) {
+            filiereChart.destroy();
+            filiereChart = null;
+        }
+
+        filiereChart = new Chart(canvas, {
+            type: 'bar',
+            data: {
+                labels: filiereLabels,
+                datasets: [{
+                    label: 'Étudiants',
+                    data: filiereData,
+                    backgroundColor: barColor,
+                    borderRadius: 6,
+                    maxBarThickness: 48
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: Object.assign(tooltipOpts(), {
+                        callbacks: {
+                            label: function (ctx) {
+                                const v = ctx.parsed.y;
+                                return ' ' + v + ' étudiant' + (v > 1 ? 's' : '');
+                            }
+                        }
+                    })
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: tickColor(), precision: 0 },
+                        grid:  { color: gridColor() }
+                    },
+                    x: {
+                        ticks: { color: tickColor() },
+                        grid:  { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ----- Line chart: monthly registrations ----- */
+    function buildMonthlyChart() {
+        const canvas = document.getElementById('monthlyChart');
+        if (!canvas || monthlyLabels.length === 0) return;
+
+        if (monthlyChart) {
+            monthlyChart.destroy();
+            monthlyChart = null;
+        }
+
+        monthlyChart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: monthlyLabels,
+                datasets: [{
+                    label: 'Inscriptions',
+                    data: monthlyData,
+                    borderColor: accentColor(),
+                    backgroundColor: accentFill(),
+                    pointBackgroundColor: accentColor(),
+                    pointBorderColor: isDark() ? '#0d1117' : '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    tension: 0.35,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: Object.assign(tooltipOpts(), {
+                        callbacks: {
+                            label: function (ctx) {
+                                const v = ctx.parsed.y;
+                                return ' ' + v + ' inscription' + (v > 1 ? 's' : '');
+                            }
+                        }
+                    })
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: tickColor(), precision: 0 },
+                        grid:  { color: gridColor() }
+                    },
+                    x: {
+                        ticks: { color: tickColor() },
+                        grid:  { color: gridColor() }
+                    }
+                }
+            }
+        });
+    }
+
+    /* ----- Initial render ----- */
+    applyChartDefaults();
+    buildFiliereChart();
+    buildMonthlyChart();
+
+    /* ----- Theme switch: rebuild both with the new palette ----- */
+    document.addEventListener('themeChanged', function () {
+        applyChartDefaults();
+        buildFiliereChart();
+        buildMonthlyChart();
     });
 })();

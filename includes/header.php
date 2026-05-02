@@ -43,6 +43,12 @@ if (isset($_GET['supprimer']) && $_GET['supprimer'] === 'ok') $flashes[] = ['typ
             </div>
             <ul class="sidebar-menu">
                 <li>
+                    <a class="<?= e(active_page('dashboard')) ?>" href="?page=dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
                     <a class="<?= e(active_page('index')) ?>" href="?page=index">
                         <i class="bi bi-people-fill"></i>
                         <span>Étudiants</span>

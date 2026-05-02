@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../config/config.php';
 
-const ALLOWED_PAGES = ['index', 'ajouter', 'modifier', 'supprimer'];
+const ALLOWED_PAGES = ['index', 'ajouter', 'modifier', 'supprimer', 'dashboard'];
 
 // Resolve requested route; fall back to 'index' on anything unknown
 $requested = $_GET['page'] ?? 'index';

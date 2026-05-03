@@ -55,6 +55,18 @@ if (isset($_GET['supprimer']) && $_GET['supprimer'] === 'ok') $flashes[] = ['typ
                     </a>
                 </li>
                 <li>
+                    <a class="<?= e(active_page('modules')) ?>" href="?page=modules">
+                        <i class="bi bi-book-fill"></i>
+                        <span>Modules</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="<?= e(active_page('notes')) ?>" href="?page=notes">
+                        <i class="bi bi-clipboard-check-fill"></i>
+                        <span>Notes</span>
+                    </a>
+                </li>
+                <li>
                     <a class="<?= e(active_page('ajouter')) ?>" href="?page=ajouter">
                         <i class="bi bi-person-plus-fill"></i>
                         <span>Ajouter</span>

@@ -702,3 +702,80 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 })();
+
+/* =========================================================
+   Phase 12 — Admin grading form
+   - Live statut preview as the admin types a note
+   - "Dirty" highlight on changed inputs
+   - beforeunload warning if leaving with unsaved changes
+   - Listener cleared on form submit so the warning doesn't fire
+   The IIFE no-ops on every page that doesn't have the form.
+   ========================================================= */
+(function () {
+    const form = document.getElementById('notesForm');
+    if (!form) return;
+
+    let dirty = false;
+
+    /**
+     * Map a typed note value to the same statut PHP will derive on save.
+     * Returns one of 'inscrit' | 'valide' | 'echoue' | 'invalid'.
+     */
+    function deriveStatut(raw) {
+        const s = (raw || '').trim().replace(',', '.');
+        if (s === '') return 'inscrit';
+        const n = Number(s);
+        if (!Number.isFinite(n) || n < 0 || n > 20) return 'invalid';
+        return n >= 10 ? 'valide' : 'echoue';
+    }
+
+    function paintPreview(input) {
+        const row = input.closest('tr');
+        if (!row) return;
+        const preview = row.querySelector('.note-statut-preview');
+        if (!preview) return;
+
+        const result = deriveStatut(input.value);
+
+        if (result === 'invalid') {
+            input.classList.add('is-invalid-soft');
+            preview.className = 'badge-statut badge-statut--echoue note-statut-preview';
+            preview.textContent = 'Invalide';
+            return;
+        }
+        input.classList.remove('is-invalid-soft');
+
+        // valide / echoue / inscrit → use the matching badge variant + label
+        preview.className = 'badge-statut badge-statut--' + result + ' note-statut-preview';
+        const labels = { valide: 'Validé', echoue: 'Échoué', inscrit: 'Inscrit' };
+        preview.textContent = labels[result];
+    }
+
+    form.querySelectorAll('.note-input').forEach(function (inp) {
+        const original = inp.dataset.original || '';
+        inp.addEventListener('input', function () {
+            paintPreview(inp);
+            if (inp.value !== original) {
+                inp.classList.add('is-dirty');
+                dirty = true;
+            } else {
+                inp.classList.remove('is-dirty');
+                // Don't reset `dirty`; another input may still be modified.
+            }
+        });
+    });
+
+    // Browser-native unsaved-changes warning. Modern browsers ignore the
+    // returnValue text and show their own generic prompt — that's expected.
+    window.addEventListener('beforeunload', function (e) {
+        if (!dirty) return undefined;
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+    });
+
+    // Clear the dirty flag right before submitting so the prompt doesn't fire.
+    form.addEventListener('submit', function () {
+        dirty = false;
+    });
+})();

@@ -1562,6 +1562,712 @@ body.dark-mode .user-avatar {
 }
 
 /* =========================================================
+   PHASE 10 — Student role
+   Teal accent + horizontal top-nav (no sidebar) so the role
+   is visually distinct from the indigo admin shell.
+   ========================================================= */
+
+:root {
+    --teal:        #14b8a6;
+    --teal-dark:   #0f766e;
+    --teal-light:  #ccfbf1;
+    --teal-accent: #5eead4;
+    --purple:      #8b5cf6;
+    --purple-dark: #6d28d9;
+    --purple-light:#ede9fe;
+}
+
+/* Body wrapper for student pages — no fixed sidebar, so no margin-left */
+.etudiant-body {
+    min-height: 100vh;
+    background: var(--body-bg);
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+/* === HORIZONTAL TOP NAV === */
+.etudiant-topbar {
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1020;
+    box-shadow: 0 1px 2px rgba(20, 184, 166, 0.05);
+}
+.etudiant-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    letter-spacing: -0.01em;
+    flex-shrink: 0;
+}
+.etudiant-brand-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--teal);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 10px rgba(20, 184, 166, 0.35);
+}
+.etudiant-nav {
+    display: flex;
+    gap: 0.25rem;
+    flex: 1;
+    overflow-x: auto;
+}
+.etudiant-nav a {
+    color: var(--text-muted);
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    white-space: nowrap;
+    transition: background 0.15s, color 0.15s;
+}
+.etudiant-nav a:hover {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+}
+.etudiant-nav a.active {
+    background: var(--teal);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(20, 184, 166, 0.30);
+}
+.etudiant-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+.etudiant-content {
+    flex: 1;
+    padding: 1.75rem 2rem 2.5rem;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+@media (max-width: 767.98px) {
+    .etudiant-topbar  { padding: 0.7rem 1rem; flex-wrap: wrap; }
+    .etudiant-content { padding: 1.25rem 1rem 2rem; }
+    .etudiant-nav a span { display: none; }
+}
+
+/* === STUDENT GREETING === */
+.etudiant-greeting {
+    margin-bottom: 1.5rem;
+}
+.etudiant-greeting h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+.etudiant-greeting .name {
+    color: var(--teal-dark);
+}
+.etudiant-greeting p {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.92rem;
+}
+
+/* === TEAL BUTTONS === */
+.btn-teal {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+    box-shadow: 0 1px 2px rgba(20, 184, 166, 0.25);
+}
+.btn-teal:hover, .btn-teal:focus {
+    background: var(--teal-dark);
+    border-color: var(--teal-dark);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(20, 184, 166, 0.35);
+}
+.btn-outline-teal {
+    color: var(--teal-dark);
+    border: 1.5px solid var(--teal);
+    background: transparent;
+}
+.btn-outline-teal:hover {
+    background: var(--teal);
+    color: #fff;
+}
+.text-teal { color: var(--teal-dark) !important; }
+
+/* === STAT ICONS — additional variants === */
+.stat-icon--teal   { background: var(--teal-light); color: var(--teal-dark); }
+.stat-icon--purple { background: var(--purple-light); color: var(--purple-dark); }
+
+/* === STATUS BADGES (inscrit / valide / echoue) === */
+.badge-statut {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+}
+.badge-statut--inscrit { background: #dbeafe; color: #1e40af; }
+.badge-statut--valide  { background: #d1fae5; color: #047857; }
+.badge-statut--echoue  { background: #fee2e2; color: #991b1b; }
+
+/* === MODULE CARDS (per-module tile in the modules grid) === */
+.module-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.1rem 1.2rem 1rem;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    display: flex;
+    flex-direction: column;
+}
+.module-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--teal);
+    box-shadow: 0 6px 18px rgba(20, 184, 166, 0.12);
+}
+.module-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+.module-code {
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.78rem;
+    color: var(--teal-dark);
+    background: var(--teal-light);
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+.credits {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    padding: 0.15rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: ui-monospace, 'JetBrains Mono', monospace;
+    white-space: nowrap;
+}
+.module-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 0.4rem;
+    letter-spacing: -0.01em;
+}
+.module-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
+    line-height: 1.5;
+    flex-grow: 1;
+}
+.module-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+.module-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+.module-note strong {
+    color: var(--teal-dark);
+    font-variant-numeric: tabular-nums;
+}
+
+/* === SEMESTER HEADER === */
+.semestre-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 1.75rem 0 0.85rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--teal-light);
+}
+.semestre-header i {
+    color: var(--teal);
+    font-size: 1.05rem;
+}
+.semestre-header h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+/* === TEAL PROGRESS BAR === */
+.progress-teal {
+    background: var(--teal-light);
+    height: 10px;
+    border-radius: 999px;
+    overflow: hidden;
+}
+.progress-teal .progress-bar {
+    background: linear-gradient(90deg, var(--teal) 0%, var(--teal-accent) 100%);
+    transition: width 0.4s ease;
+}
+
+/* === PROFILE CARD === */
+.profile-card .card-body {
+    padding: 2rem 1.5rem;
+}
+.profile-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-accent) 100%);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    box-shadow: 0 8px 24px rgba(20, 184, 166, 0.30);
+    letter-spacing: -0.02em;
+}
+.profile-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+.profile-email {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    margin-bottom: 0.5rem;
+}
+.profile-filiere {
+    display: inline-block;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+.profile-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    text-align: left;
+    font-size: 0.85rem;
+}
+.profile-meta div {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border);
+    padding-bottom: 0.4rem;
+}
+.profile-meta dt { color: var(--text-muted); margin: 0; font-weight: 500; }
+.profile-meta dd { color: var(--text-primary); margin: 0; font-weight: 600; }
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    margin-top: 0.5rem;
+}
+.profile-stat-value {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--teal-dark);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+}
+.profile-stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-top: 0.15rem;
+    font-weight: 600;
+}
+
+/* === USER CHIP — TEAL VARIANT === */
+.user-chip--teal {
+    background: var(--teal-light);
+    color: var(--teal-dark);
+}
+.user-avatar--teal {
+    background: var(--teal);
+    color: #fff;
+}
+
+/* === LOGIN — TEAL VARIANT === */
+.login-body--teal {
+    background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 60%, #99f6e4 100%);
+}
+.login-body--teal::before {
+    background: radial-gradient(circle at center,
+                rgba(20, 184, 166, 0.20) 0%,
+                rgba(20, 184, 166, 0) 60%);
+}
+.login-logo--teal {
+    background: var(--teal);
+    box-shadow: 0 6px 18px rgba(20, 184, 166, 0.35);
+}
+.login-other-link {
+    color: var(--teal-dark);
+    font-weight: 500;
+    text-decoration: none;
+}
+.login-other-link:hover { text-decoration: underline; }
+
+/* === STUDENT DARK MODE === */
+body.dark-mode.etudiant-body {
+    background: var(--dm-bg-base) !important;
+    color: var(--dm-text-primary) !important;
+}
+body.dark-mode .etudiant-topbar {
+    background: var(--dm-bg-surface) !important;
+    border-bottom-color: var(--dm-border) !important;
+}
+body.dark-mode .etudiant-brand    { color: var(--dm-text-primary) !important; }
+body.dark-mode .etudiant-greeting h2 { color: var(--dm-text-primary) !important; }
+body.dark-mode .etudiant-greeting p  { color: var(--dm-text-muted)  !important; }
+body.dark-mode .etudiant-greeting .name {
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .etudiant-nav a {
+    color: var(--dm-text-secondary) !important;
+}
+body.dark-mode .etudiant-nav a:hover {
+    background: rgba(20, 184, 166, 0.15) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .etudiant-nav a.active {
+    background: var(--teal) !important;
+    color: #fff !important;
+}
+body.dark-mode .text-teal { color: var(--teal-accent) !important; }
+
+body.dark-mode .module-card {
+    background: var(--dm-bg-surface) !important;
+    border-color: var(--dm-border) !important;
+}
+body.dark-mode .module-card:hover {
+    border-color: var(--teal) !important;
+    box-shadow: 0 6px 18px rgba(20, 184, 166, 0.20) !important;
+}
+body.dark-mode .module-title { color: var(--dm-text-primary) !important; }
+body.dark-mode .module-desc  { color: var(--dm-text-muted)  !important; }
+body.dark-mode .module-code {
+    background: rgba(20, 184, 166, 0.18) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .credits {
+    background: rgba(20, 184, 166, 0.18) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .module-note strong { color: var(--teal-accent) !important; }
+
+body.dark-mode .badge-statut--inscrit {
+    background: rgba(59, 130, 246, 0.18) !important;
+    color: #93c5fd !important;
+}
+body.dark-mode .badge-statut--valide {
+    background: rgba(46, 160, 67, 0.18) !important;
+    color: #6ee7b7 !important;
+}
+body.dark-mode .badge-statut--echoue {
+    background: rgba(248, 81, 73, 0.18) !important;
+    color: #fca5a5 !important;
+}
+
+body.dark-mode .semestre-header {
+    border-bottom-color: rgba(20, 184, 166, 0.30) !important;
+}
+body.dark-mode .semestre-header h3 {
+    color: var(--teal-accent) !important;
+}
+
+body.dark-mode .progress-teal {
+    background: rgba(20, 184, 166, 0.15) !important;
+}
+
+body.dark-mode .profile-name    { color: var(--dm-text-primary) !important; }
+body.dark-mode .profile-email   { color: var(--dm-text-muted) !important; }
+body.dark-mode .profile-filiere {
+    background: rgba(20, 184, 166, 0.18) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .profile-meta dt { color: var(--dm-text-muted) !important; }
+body.dark-mode .profile-meta dd { color: var(--dm-text-primary) !important; }
+body.dark-mode .profile-meta div {
+    border-bottom-color: var(--dm-border-muted) !important;
+}
+body.dark-mode .profile-stat-value { color: var(--teal-accent) !important; }
+
+body.dark-mode .user-chip--teal {
+    background: rgba(20, 184, 166, 0.18) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .user-avatar--teal {
+    background: var(--teal) !important;
+}
+
+body.dark-mode.login-body--teal {
+    background: linear-gradient(135deg, #0d1117 0%, #0f2027 60%, #14b8a6 200%) !important;
+}
+body.dark-mode .login-body--teal::before {
+    background: radial-gradient(circle at center,
+                rgba(94, 234, 212, 0.22) 0%,
+                rgba(94, 234, 212, 0) 60%);
+}
+body.dark-mode .login-other-link { color: var(--teal-accent) !important; }
+
+body.dark-mode .stat-icon--teal {
+    background: rgba(20, 184, 166, 0.18) !important;
+    color: var(--teal-accent) !important;
+}
+body.dark-mode .stat-icon--purple {
+    background: rgba(139, 92, 246, 0.18) !important;
+    color: #c4b5fd !important;
+}
+
+/* =========================================================
+   PHASE 11 — Admin module CRUD
+   Module-specific cell chips: code, credits, inscription count.
+   ========================================================= */
+
+/* Monospace badge for the module code column */
+.module-code {
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', 'SF Mono',
+                 Menlo, Consolas, monospace;
+    background: var(--primary-light);
+    color: var(--primary);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+/* Pill chip for credits — purple to read as "academic credit" */
+.credits-badge {
+    display: inline-block;
+    background: #ede9fe;
+    color: #4f46e5;
+    padding: 0.2rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: ui-monospace, 'JetBrains Mono', monospace;
+    white-space: nowrap;
+}
+
+/* Inline "X étudiants" with people icon on the modules list */
+.inscriptions-count {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+.inscriptions-count i {
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+/* === DARK MODE PAIRS === */
+body.dark-mode .module-code {
+    background: var(--dm-accent-bg) !important;
+    color: var(--dm-accent-hover) !important;
+}
+body.dark-mode .credits-badge {
+    background: rgba(129, 140, 248, 0.18) !important;
+    color: var(--dm-accent-hover) !important;
+}
+body.dark-mode .inscriptions-count {
+    color: var(--dm-text-muted) !important;
+}
+body.dark-mode .inscriptions-count i {
+    color: var(--dm-accent-hover) !important;
+}
+
+/* =========================================================
+   PHASE 12 — Admin grading
+   List counters, student header card, note input, sticky save bar.
+   ========================================================= */
+
+/* Per-column count chips on the notes list */
+.notes-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.notes-count--inscrits { background: var(--primary-light); color: var(--primary-dark); }
+.notes-count--notes    { background: #e0f2fe;             color: #0369a1; }
+.notes-count--valides  { background: #d1fae5;             color: #047857; }
+.notes-count--echoues  { background: #fee2e2;             color: #991b1b; }
+
+/* Student header card on notes_etudiant.php */
+.notes-student-header .card-body {
+    padding: 1.25rem 1.5rem;
+}
+.notes-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary) 0%, #818cf8 100%);
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.30);
+    letter-spacing: -0.02em;
+}
+.notes-student-name {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 0 0 0.15rem;
+    color: var(--text-primary);
+    letter-spacing: -0.01em;
+}
+.notes-summary {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: auto;
+    text-align: center;
+    flex-wrap: wrap;
+}
+.notes-summary-value {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+}
+.notes-summary-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+    font-weight: 600;
+}
+
+/* Note input — narrow, monospace, right-aligned text for clean digits */
+.notes-table .note-input {
+    text-align: center;
+    font-family: ui-monospace, 'JetBrains Mono', 'Fira Code', monospace;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.5rem;
+    width: 100px;
+    margin: 0 auto;
+    font-variant-numeric: tabular-nums;
+}
+.notes-table .note-input.is-dirty {
+    border-color: var(--warning);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+.notes-table .note-input.is-invalid-soft {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+.note-statut-preview {
+    transition: background-color 0.18s ease, color 0.18s ease;
+}
+
+/* Sticky save bar at the bottom of the form */
+.notes-save-bar {
+    position: sticky;
+    bottom: 0;
+    background: var(--card-bg);
+    border-top: 1px solid var(--border);
+    padding: 0.85rem 1rem;
+    margin-top: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 -4px 16px rgba(30, 27, 75, 0.06);
+    z-index: 5;
+}
+.notes-save-bar-inner {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+/* === DARK MODE PAIRS === */
+body.dark-mode .notes-count--inscrits {
+    background: var(--dm-accent-bg) !important;
+    color: var(--dm-accent-hover) !important;
+}
+body.dark-mode .notes-count--notes {
+    background: rgba(59, 130, 246, 0.18) !important;
+    color: #93c5fd !important;
+}
+body.dark-mode .notes-count--valides {
+    background: rgba(46, 160, 67, 0.18) !important;
+    color: #6ee7b7 !important;
+}
+body.dark-mode .notes-count--echoues {
+    background: rgba(248, 81, 73, 0.18) !important;
+    color: #fca5a5 !important;
+}
+body.dark-mode .notes-student-name { color: var(--dm-text-primary) !important; }
+body.dark-mode .notes-summary-value { color: var(--dm-text-primary) !important; }
+body.dark-mode .notes-summary-label { color: var(--dm-text-muted) !important; }
+body.dark-mode .notes-avatar {
+    background: linear-gradient(135deg, var(--dm-accent) 0%, var(--dm-accent-hover) 100%) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+}
+body.dark-mode .notes-table .note-input.is-dirty {
+    border-color: var(--dm-warning-text) !important;
+    box-shadow: 0 0 0 3px rgba(210, 153, 34, 0.20) !important;
+}
+body.dark-mode .notes-save-bar {
+    background: var(--dm-bg-surface) !important;
+    border-top-color: var(--dm-border) !important;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* =========================================================
    PHASE 8 — SQL Console (full-power runner)
 
    Editor: Catppuccin Mocha dark surface (#1e1e2e / #181825 / #cdd6f4)

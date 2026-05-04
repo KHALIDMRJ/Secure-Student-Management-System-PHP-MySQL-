@@ -432,7 +432,7 @@ Le schéma est volontairement **minimal mais relationnel** : quatre tables, deux
 
 ### 🔐 Page de connexion
 
-![Page de connexion](screenshots/Capture.PNG)
+![Page de connexion](screenshots/connexion.PNG)
 
 *Authentification administrateur avec rate limiting (5 tentatives/min), CSRF token et honeypot anti-bot — l'écran d'entrée du système.*
 

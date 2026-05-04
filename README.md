@@ -1,6 +1,6 @@
 <div align="center">
 
-```
+```text
 ███████╗███████╗ ██████╗██╗   ██╗██████╗ ███████╗
 ██╔════╝██╔════╝██╔════╝██║   ██║██╔══██╗██╔════╝
 ███████╗█████╗  ██║     ██║   ██║██████╔╝█████╗
@@ -10,9 +10,8 @@
         S T U D E N T   M A N A G E M E N T
 ```
 
-
-> *A production-grade, security-first student management platform —
-> built from scratch in pure PHP with zero frameworks.*
+> *A production-grade, security-first student management platform —*
+> *built from scratch in pure PHP with zero frameworks.*
 
 ![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)
@@ -27,49 +26,34 @@
 
 </div>
 
-**SecureStudentMS** est une plateforme web complète de gestion d'étudiants
-conçue pour les établissements supérieurs qui ont besoin à la fois d'un
-back-office administratif puissant et d'un portail étudiant en libre-service.
-L'application expose deux interfaces strictement cloisonnées — une console
-admin avec CRUD complet, dashboards analytiques, saisie des notes et console
-SQL ; et un espace étudiant où chacun ne voit que ses propres données. La
-sécurité y est traitée comme un concern architectural de premier plan :
-bcrypt, jetons CSRF, rate limiting fichier, Content-Security-Policy avec
-nonce, sessions hardenées, et défense honeypot anti-bot. Construit **sans la
-moindre dépendance framework**, le projet démontre qu'une application PHP
-moderne peut être propre, sécurisée et maintenable à condition que chaque
-décision d'architecture soit explicite — ce qui est précisément l'objet
-pédagogique de ce projet de fin d'études.
+**SecureStudentMS** est une plateforme web complète de gestion d'étudiants conçue pour les établissements supérieurs qui ont besoin à la fois d'un back-office administratif puissant et d'un portail étudiant en libre-service. L'application expose deux interfaces strictement cloisonnées — une console admin avec CRUD complet, dashboards analytiques, saisie des notes et console SQL ; et un espace étudiant où chacun ne voit que ses propres données. La sécurité y est traitée comme un *concern* architectural de premier plan : bcrypt, jetons CSRF, rate limiting fichier, Content-Security-Policy avec nonce, sessions hardenées, et défense honeypot anti-bot. Construit **sans la moindre dépendance framework**, le projet démontre qu'une application PHP moderne peut être propre, sécurisée et maintenable à condition que chaque décision d'architecture soit explicite — ce qui est précisément l'objet pédagogique de ce projet de fin d'études.
+
 
 ---
+
 
 ## 📋 Table des matières
 
 1. [✨ Aperçu des fonctionnalités](#-aperçu-des-fonctionnalités)
 2. [🔐 Architecture de sécurité](#-architecture-de-sécurité)
 3. [🏗️ Architecture technique](#️-architecture-technique)
-4. [🛠️ Stack technique](#️-stack-technique)
-5. [🗄️ Modèle de données](#️-modèle-de-données)
-6. [🛣️ Routes](#️-routes)
-7. [🚀 Installation et démarrage](#-installation-et-démarrage)
-8. [🎨 Interface utilisateur](#-interface-utilisateur)
-9. [📊 Fonctionnalités avancées](#-fonctionnalités-avancées)
-10. [📸 Captures d'écran](#-captures-décran)
-11. [🔮 Améliorations futures](#-améliorations-futures)
-12. [🤝 Contribution](#-contribution)
-13. [📄 Licence](#-licence)
-14. [👨‍💻 Auteur](#-auteur)
+4. [🗄️ Modèle de données](#️-modèle-de-données)
+5. [📸 Aperçu de l'application](#-aperçu-de-lapplication)
+6. [🚀 Installation et démarrage](#-installation-et-démarrage)
+7. [🎨 Interface utilisateur](#-interface-utilisateur)
+8. [📊 Fonctionnalités avancées](#-fonctionnalités-avancées)
+9. [🔮 Améliorations futures](#-améliorations-futures)
+10. [🤝 Contribution](#-contribution)
+11. [📄 Licence](#-licence)
+12. [👨‍💻 Auteur](#-auteur)
+
 
 ---
 
+
 ## ✨ Aperçu des fonctionnalités
 
-L'application n'est pas une simple démo CRUD : elle implémente un cycle de
-gestion académique complet, du référentiel des modules jusqu'à la saisie des
-notes en passant par l'auto-inscription des étudiants. Chaque fonctionnalité
-est conçue pour être **utilisée en production** — validation serveur,
-messages d'erreur explicites, transitions soignées, états vides documentés,
-notifications toast, et raccourcis clavier.
+L'application n'est pas une simple démo CRUD : elle implémente un cycle de gestion académique complet, du référentiel des modules jusqu'à la saisie des notes en passant par l'auto-inscription des étudiants. Chaque fonctionnalité est conçue pour être **utilisée en production** — validation serveur, messages d'erreur explicites, transitions soignées, états vides documentés, notifications toast, et raccourcis clavier.
 
 ### 👨‍💼 Espace Administrateur
 
@@ -94,17 +78,15 @@ notifications toast, et raccourcis clavier.
 | **Mon profil** | Infos personnelles + changement de mot de passe avec vérification de l'ancien | 👤 |
 | **Interface dédiée** | Palette teal distincte de l'admin, navigation horizontale, identité visuelle propre | 🎨 |
 
+
 ---
+
 
 ## 🔐 Architecture de sécurité
 
-> *This project treats security not as an afterthought but as a first-class
-> architectural concern. Every user input is validated, every output is
-> escaped, and every session is hardened.*
+> 💡 *This project treats security not as an afterthought but as a first-class architectural concern. Every user input is validated, every output is escaped, and every session is hardened.*
 
-Chaque vecteur d'attaque a été identifié explicitement et reçoit au moins
-**une mitigation dédiée**. La matrice ci-dessous documente la défense pour
-chacun.
+Chaque vecteur d'attaque a été identifié explicitement et reçoit au moins **une mitigation dédiée**. La matrice ci-dessous documente la défense pour chacun.
 
 ### Matrice de menaces
 
@@ -130,9 +112,10 @@ chacun.
 | **Erreurs verbeuses** | Stack traces exposant la stack technique | `error_log()` interne, message générique côté client | `includes/security.php` (`abort()`) |
 
 <details>
-<summary>✅ Liste de contrôle sécurité complète (cliquer pour développer)</summary>
+<summary>✅ <strong>Liste de contrôle sécurité complète (cliquer pour développer)</strong></summary>
 
-#### Authentification
+#### 🔑 Authentification
+
 - [x] Mots de passe hashés avec `password_hash($pw, PASSWORD_DEFAULT)` (bcrypt)
 - [x] Vérification timing-safe via `password_verify()`
 - [x] Hash de décoy joué pour les utilisateurs inexistants (anti-énumération)
@@ -140,7 +123,8 @@ chacun.
 - [x] Rate limiting 5 tentatives/min/IP, blocage 5 min sur abus
 - [x] Audit log de chaque tentative (succès et échec) avec IP + identifiant
 
-#### Sessions
+#### 🍪 Sessions
+
 - [x] `session.cookie_httponly = 1`
 - [x] `session.cookie_samesite = Strict`
 - [x] `session.use_strict_mode = 1`
@@ -150,13 +134,15 @@ chacun.
 - [x] Régénération périodique toutes les 30 min
 - [x] User-Agent pinning (destruction sur changement)
 
-#### CSRF
+#### 🛡️ CSRF
+
 - [x] Jeton 32 octets en hex stocké en session
 - [x] Vérification timing-safe via `hash_equals`
 - [x] Renouvellement après chaque opération réussie
 - [x] Cookie `SameSite=Strict` comme défense additionnelle
 
-#### Headers HTTP
+#### 📜 Headers HTTP
+
 - [x] `Content-Security-Policy` avec nonce cryptographique
 - [x] `X-Frame-Options: DENY`
 - [x] `X-Content-Type-Options: nosniff`
@@ -165,14 +151,16 @@ chacun.
 - [x] `Permissions-Policy: geolocation=(), microphone=(), camera=()`
 - [x] `header_remove('X-Powered-By')`
 
-#### Données
-- [x] Toutes les requêtes en `prepared statements` PDO
+#### 🗄️ Données
+
+- [x] Toutes les requêtes en *prepared statements* PDO
 - [x] `ATTR_EMULATE_PREPARES = false`
 - [x] `ATTR_ERRMODE = ERRMODE_EXCEPTION`
 - [x] Charset UTF-8 explicite dans le DSN
 - [x] Colonnes `ORDER BY` en allowlist avant interpolation
 
-#### Filesystem
+#### 📁 Filesystem
+
 - [x] `.htaccess` à la racine bloque les extensions sensibles
 - [x] `.htaccess Require all denied` dans `config/`, `includes/`, `pages/`
 - [x] `Options -Indexes` pour empêcher le listing
@@ -180,20 +168,17 @@ chacun.
 
 </details>
 
+
 ---
+
 
 ## 🏗️ Architecture technique
 
-Construire une application sans framework est un **choix pédagogique délibéré**.
-Cela force à expliciter chaque décision — routing, autoloading,
-rendering, validation, persistance — au lieu de s'appuyer sur des
-conventions opaques. Le résultat est une codebase compacte (~3000 lignes
-de PHP) où chaque fichier a une responsabilité unique et où n'importe quel
-développeur peut tracer une requête de bout en bout en quelques minutes.
+Construire une application sans framework est un **choix pédagogique délibéré**. Cela force à expliciter chaque décision — routing, autoloading, rendering, validation, persistance — au lieu de s'appuyer sur des conventions opaques. Le résultat est une codebase compacte (~3000 lignes de PHP) où chaque fichier a une responsabilité unique et où n'importe quel développeur peut tracer une requête de bout en bout en quelques minutes.
 
 ### Pattern MVC-inspiré
 
-```
+```text
        Request (HTTP)
             │
             ▼
@@ -228,29 +213,71 @@ développeur peut tracer une requête de bout en bout en quelques minutes.
        Response (HTML)
 ```
 
-<details>
-<summary>📁 Structure complète du projet (cliquer pour développer)</summary>
+### Stack technique
 
-```
+| Catégorie | Technologie | Version | Usage |
+| --- | --- | :---: | --- |
+| **Backend** | PHP | 8.2 | Logique serveur, types stricts (`declare(strict_types=1)`) |
+| **Base de données** | MySQL | 8.0 | Stockage relationnel, contraintes FK, ENUM |
+| **Accès BDD** | PDO | natif | Requêtes préparées, transactions, ERRMODE_EXCEPTION |
+| **Framework CSS** | Bootstrap | 5.3 | Grid, composants, utilitaires |
+| **Design system** | CSS custom | — | Tokens (variables), dark mode 3 couches, animations |
+| **Charts** | Chart.js | 4.4 | Bar + line charts, thème dynamique via `themeChanged` event |
+| **Frontend JS** | Vanilla JS | ES2017+ | Aucune dépendance, IIFE pattern, CSP-safe |
+| **Icônes** | Bootstrap Icons | 1.11 | Iconographie cohérente sur les deux espaces |
+| **Typographie** | Inter (Google Fonts) | — | Variable font, lisible, neutre |
+| **Mono font** | JetBrains Mono | — | Code blocks, console SQL, badges techniques |
+| **Serveur web** | Apache | 2.4 | XAMPP, `.htaccess` pour le hardening |
+
+### Routing
+
+Toutes les routes sont validées par le contrôleur frontal contre une **whitelist** stricte. Toute valeur hors-liste retombe sur `?page=index`, et les routes nestées (`etudiant/*`) sont autorisées explicitement — il n'y a aucun risque de path traversal via la route.
+
+| Route | Page | Rôle |
+| --- | --- | --- |
+| `?page=login` | `login.php` | Connexion admin (publique) |
+| `?page=logout` | `logout.php` | Déconnexion (POST + CSRF) |
+| `?page=dashboard` | `dashboard.php` | KPIs + charts |
+| `?page=index` | `index.php` | Liste étudiants |
+| `?page=ajouter` | `ajouter.php` | Ajouter un étudiant |
+| `?page=modifier&id=N` | `modifier.php` | Éditer un étudiant |
+| `?page=supprimer&id=N` | `supprimer.php` | Supprimer un étudiant |
+| `?page=modules` | `modules.php` | Liste modules + filtres |
+| `?page=modules_ajouter` | `modules_ajouter.php` | Créer un module + auto-inscription |
+| `?page=modules_modifier&id=N` | `modules_modifier.php` | Éditer un module + sync inscriptions |
+| `?page=modules_supprimer&id=N` | `modules_supprimer.php` | Supprimer un module |
+| `?page=notes` | `notes.php` | Liste étudiants à noter |
+| `?page=notes_etudiant&id=N` | `notes_etudiant.php` | Saisie des notes |
+| `?page=sql` | `sql.php` | Console SQL avec confirmation |
+| `?page=etudiant/login` | `etudiant/login.php` | Connexion étudiant (publique) |
+| `?page=etudiant/logout` | `etudiant/logout.php` | Déconnexion étudiant (POST + CSRF) |
+| `?page=etudiant/dashboard` | `etudiant/dashboard.php` | Stats personnelles |
+| `?page=etudiant/modules` | `etudiant/modules.php` | Modules de sa filière |
+| `?page=etudiant/profil` | `etudiant/profil.php` | Profil + change mot de passe |
+
+<details>
+<summary>📁 <strong>Structure complète du projet (cliquer pour développer)</strong></summary>
+
+```text
 SecureStudentMS/
-├── 📁 config/
+├── config/
 │   └── config.php                      # Credentials BDD, constantes globales, getPDO() singleton
-├── 📁 database/
+├── database/
 │   ├── install_auth.php                # CLI : crée la table admins + seed admin par défaut
 │   └── install_student_auth.php        # CLI : étend etudiants + crée modules/inscriptions + seed
-├── 📁 includes/
+├── includes/
 │   ├── auth.php                        # Auth admin : login_admin, logout_admin, require_auth
 │   ├── etudiant_auth.php               # Auth étudiant (clés session disjointes)
-│   ├── helpers.php                     # e(), redirect(), build_url(), paginate(), sort_icon(), CSRF, honeypot
+│   ├── helpers.php                     # e(), redirect(), build_url(), paginate(), CSRF, honeypot
 │   ├── rate_limiter.php                # Rate-limit fichier (sys_get_temp_dir)
 │   ├── security.php                    # send_security_headers(), abort(), configure_session()
 │   ├── header.php                      # Layout admin : sidebar + topbar
 │   ├── footer.php                      # Fermeture du layout admin + scripts
 │   ├── etudiant_header.php             # Layout étudiant : top-nav teal
 │   └── etudiant_footer.php             # Fermeture du layout étudiant
-├── 📁 pages/
-│   ├── 📁 etudiant/
-│   │   ├── login.php                   # Connexion étudiant (standalone, pas de require_etudiant_auth)
+├── pages/
+│   ├── etudiant/
+│   │   ├── login.php                   # Connexion étudiant (standalone)
 │   │   ├── logout.php                  # Logout POST + CSRF
 │   │   ├── dashboard.php               # 4 stat cards + activité récente
 │   │   ├── modules.php                 # Modules par semestre + auto-inscription
@@ -269,14 +296,14 @@ SecureStudentMS/
 │   ├── notes.php                       # Liste étudiants à noter (avec compteurs)
 │   ├── notes_etudiant.php              # Saisie bulk avec live preview
 │   └── sql.php                         # Console SQL multi-requête
-├── 📁 public/                          # Document root Apache
+├── public/                             # Document root Apache
 │   ├── index.php                       # Front controller : routing + dispatch
-│   ├── 📁 css/
+│   ├── css/
 │   │   └── style.css                   # Design system + dark mode + tous les composants
-│   └── 📁 js/
+│   └── js/
 │       └── app.js                      # Dark mode, charts, SQL editor, dirty-tracking notes
-├── 📁 screenshots/                     # Captures pour le README
-├── .htaccess                           # Hardening Apache : -Indexes, deny dotfiles, etc.
+├── screenshots/                        # Captures pour le README
+├── .htaccess                           # Hardening Apache : -Indexes, deny dotfiles
 ├── README.md
 └── index.php                           # Redirection racine vers public/
 ```
@@ -285,68 +312,29 @@ SecureStudentMS/
 
 ### Décisions d'architecture clés
 
-1. **Single entry point (`public/index.php`)** — toutes les requêtes
-   passent par un contrôleur frontal qui valide la route contre une
-   whitelist explicite (`ALLOWED_PAGES`). Conséquence : aucune URL ne peut
-   pointer vers un fichier non répertorié, et les chemins de pages restent
-   invisibles depuis l'extérieur.
+1. **Single entry point (`public/index.php`)** — toutes les requêtes passent par un contrôleur frontal qui valide la route contre une whitelist explicite (`ALLOWED_PAGES`). Conséquence : aucune URL ne peut pointer vers un fichier non répertorié, et les chemins de pages restent invisibles depuis l'extérieur.
 
-2. **Singleton PDO (`getPDO()`)** — une seule connexion par requête,
-   instanciée à la demande, configurée avec `ERRMODE_EXCEPTION` et
-   `EMULATE_PREPARES = false`. Évite la multiplication des handles et
-   garantit que toute erreur SQL est *fail-loud* côté serveur.
+2. **Singleton PDO (`getPDO()`)** — une seule connexion par requête, instanciée à la demande, configurée avec `ERRMODE_EXCEPTION` et `EMULATE_PREPARES = false`. Évite la multiplication des handles et garantit que toute erreur SQL est *fail-loud* côté serveur.
 
-3. **PRG (Post / Redirect / Get)** — chaque écriture redirige vers une URL
-   GET avec un flag de succès (`?ajout=ok`). Refresh = pas de re-soumission,
-   bouton retour = pas de pop-up navigateur, et les flash messages restent
-   prévisibles.
+3. **PRG (Post / Redirect / Get)** — chaque écriture redirige vers une URL GET avec un flag de succès (`?ajout=ok`). Refresh = pas de re-soumission, bouton retour = pas de pop-up navigateur, et les flash messages restent prévisibles.
 
-4. **CSP nonce par requête** — chaque réponse génère un nonce
-   cryptographique de 16 octets ; toute balise `<script>` doit le porter.
-   Conséquence : aucun script inline injecté ne peut s'exécuter, même si
-   l'échappement venait à tomber sur une page.
+4. **CSP nonce par requête** — chaque réponse génère un nonce cryptographique de 16 octets ; toute balise `<script>` doit le porter. Conséquence : aucun script inline injecté ne peut s'exécuter, même si l'échappement venait à tomber sur une page.
 
-5. **Séparation des rôles par namespace de session** — `admin_id` et
-   `etudiant_id` sont des clés distinctes. `require_auth()` vérifie la
-   première, `require_etudiant_auth()` la seconde. Un étudiant ne peut
-   *physiquement* pas accéder à un endpoint admin, même s'il connaît
-   l'URL — sa session n'a pas la clé nécessaire.
+5. **Séparation des rôles par namespace de session** — `admin_id` et `etudiant_id` sont des clés distinctes. `require_auth()` vérifie la première, `require_etudiant_auth()` la seconde. Un étudiant ne peut *physiquement* pas accéder à un endpoint admin, même s'il connaît l'URL — sa session n'a pas la clé nécessaire.
 
-6. **Rate limiting fichier** — un fichier JSON par tuple (action, IP)
-   stocke les tentatives dans `sys_get_temp_dir()`. Pas de Redis, pas de
-   cache externe, fonctionne sur n'importe quel hébergement mutualisé. La
-   fenêtre est glissante (filter `array_filter` à chaque hit).
+6. **Rate limiting fichier** — un fichier JSON par tuple (action, IP) stocke les tentatives dans `sys_get_temp_dir()`. Pas de Redis, pas de cache externe, fonctionne sur n'importe quel hébergement mutualisé. La fenêtre est glissante (filter `array_filter` à chaque hit).
+
 
 ---
 
-## 🛠️ Stack technique
-
-| Catégorie | Technologie | Version | Usage |
-| --- | --- | :---: | --- |
-| **Backend** | PHP | 8.2 | Logique serveur, types stricts (`declare(strict_types=1)`) |
-| **Base de données** | MySQL | 8.0 | Stockage relationnel, contraintes FK, ENUM |
-| **Accès BDD** | PDO | natif | Requêtes préparées, transactions, ERRMODE_EXCEPTION |
-| **Framework CSS** | Bootstrap | 5.3 | Grid, composants, utilitaires |
-| **Design system** | CSS custom | — | Tokens (variables), dark mode 3 couches, animations |
-| **Charts** | Chart.js | 4.4 | Bar + line charts, thème dynamique via `themeChanged` event |
-| **Frontend JS** | Vanilla JS | ES2017+ | Aucune dépendance, IIFE pattern, CSP-safe |
-| **Icônes** | Bootstrap Icons | 1.11 | Iconographie cohérente sur les deux espaces |
-| **Typographie** | Inter (Google Fonts) | — | Variable font, lisible, neutre |
-| **Mono font** | JetBrains Mono | — | Code blocks, console SQL, badges techniques |
-| **Serveur web** | Apache | 2.4 | XAMPP, `.htaccess` pour le hardening |
-
----
 
 ## 🗄️ Modèle de données
 
-Le schéma est volontairement **minimal mais relationnel** : quatre tables,
-deux relations many-to-one, une table de jointure portant des données
-métier (note + statut). Chaque table a sa propre clé primaire
-auto-incrémentée et au moins un index utile.
+Le schéma est volontairement **minimal mais relationnel** : quatre tables, deux relations many-to-one, une table de jointure portant des données métier (note + statut). Chaque table a sa propre clé primaire auto-incrémentée et au moins un index utile.
 
 ### Diagramme entité-relation
 
-```
+```text
    ┌────────────────────┐
    │      admins        │   ← gère l'ensemble du système
    ├────────────────────┤
@@ -436,45 +424,81 @@ auto-incrémentée et au moins un index utile.
 | `inscribed_at` | DATETIME | NOT NULL | Horodatage d'inscription |
 | `UNIQUE` | (etudiant_id, module_id) | — | Empêche le doublon d'inscription |
 
----
-
-## 🛣️ Routes
-
-Toutes les routes sont validées par le contrôleur frontal contre une
-**whitelist** stricte. Toute valeur hors-liste retombe sur `?page=index`,
-et les routes nestées (`etudiant/*`) sont autorisées explicitement —
-il n'y a aucun risque de path traversal via la route.
-
-### Scope admin
-
-| Route | Page | Rôle |
-| --- | --- | --- |
-| `?page=login` | `login.php` | Connexion admin (publique) |
-| `?page=logout` | `logout.php` | Déconnexion (POST + CSRF) |
-| `?page=dashboard` | `dashboard.php` | KPIs + charts |
-| `?page=index` | `index.php` | Liste étudiants |
-| `?page=ajouter` | `ajouter.php` | Ajouter un étudiant |
-| `?page=modifier&id=N` | `modifier.php` | Éditer un étudiant |
-| `?page=supprimer&id=N` | `supprimer.php` | Supprimer un étudiant |
-| `?page=modules` | `modules.php` | Liste modules + filtres |
-| `?page=modules_ajouter` | `modules_ajouter.php` | Créer un module + auto-inscription |
-| `?page=modules_modifier&id=N` | `modules_modifier.php` | Éditer un module + sync inscriptions |
-| `?page=modules_supprimer&id=N` | `modules_supprimer.php` | Supprimer un module |
-| `?page=notes` | `notes.php` | Liste étudiants à noter |
-| `?page=notes_etudiant&id=N` | `notes_etudiant.php` | Saisie des notes |
-| `?page=sql` | `sql.php` | Console SQL avec confirmation |
-
-### Scope étudiant
-
-| Route | Page | Rôle |
-| --- | --- | --- |
-| `?page=etudiant/login` | `etudiant/login.php` | Connexion étudiant (publique) |
-| `?page=etudiant/logout` | `etudiant/logout.php` | Déconnexion (POST + CSRF) |
-| `?page=etudiant/dashboard` | `etudiant/dashboard.php` | Stats personnelles |
-| `?page=etudiant/modules` | `etudiant/modules.php` | Modules de sa filière |
-| `?page=etudiant/profil` | `etudiant/profil.php` | Profil + change mot de passe |
 
 ---
+
+
+## 📸 Aperçu de l'application
+
+### 🔐 Page de connexion
+
+![Page de connexion](screenshots/Capture.PNG)
+
+*Authentification administrateur avec rate limiting (5 tentatives/min), CSRF token et honeypot anti-bot — l'écran d'entrée du système.*
+
+
+---
+
+
+### 📊 Tableau de bord administrateur
+
+![Dashboard Admin](screenshots/dashboard.PNG)
+
+*Vue d'ensemble avec 4 KPIs (étudiants, filières, filière populaire, dernier inscrit), bar chart de répartition par filière et line chart des inscriptions sur 12 mois — rendus avec Chart.js et palette adaptative au thème.*
+
+
+---
+
+
+### ➕ Ajout d'un étudiant
+
+![Ajouter un étudiant](screenshots/ajouter.PNG)
+
+*Formulaire d'ajout avec validation côté serveur, vérification d'unicité de l'email, jeton CSRF et champ honeypot invisible — un faux succès silencieux est renvoyé aux bots.*
+
+
+---
+
+
+### 📚 Gestion des modules
+
+![Modules](screenshots/modules.PNG)
+
+*Catalogue complet avec recherche serveur, filtres par filière et semestre, tri sur chaque colonne et pagination intelligente — y compris le compteur d'étudiants inscrits par module.*
+
+
+---
+
+
+### 📝 Saisie des notes
+
+![Notes](screenshots/notes.PNG)
+
+*Interface bulk de notation avec aperçu live du statut (validé/échoué/inscrit), dirty-tracking visuel, vérification d'ownership par ligne et avertissement `beforeunload` en cas de modifications non sauvegardées.*
+
+
+---
+
+
+### 🎓 Espace étudiant
+
+![Espace étudiant](screenshots/etudiant.PNG)
+
+*Tableau de bord personnel — modules inscrits, validés, échoués, moyenne générale et activité récente. Interface dédiée en palette teal pour une distinction visuelle nette d'avec l'admin.*
+
+
+---
+
+
+### 🌙 Mode sombre
+
+![Mode sombre](screenshots/dark_mode.PNG)
+
+*Thème sombre GitHub-inspired (système de profondeur à 3 couches : `#0d1117` → `#161b22` → `#21262d`), transition fluide de 300 ms, persistance localStorage et application pré-paint pour éviter le flash de thème clair.*
+
+
+---
+
 
 ## 🚀 Installation et démarrage
 
@@ -488,7 +512,7 @@ il n'y a aucun risque de path traversal via la route.
 | **Extensions PHP** | `pdo_mysql`, `mbstring`, `json` | toutes activées |
 
 <details>
-<summary>📦 Procédure d'installation pas-à-pas (cliquer pour développer)</summary>
+<summary>📦 <strong>Procédure d'installation pas-à-pas (cliquer pour développer)</strong></summary>
 
 #### Étape 1 — Cloner le projet
 
@@ -512,20 +536,18 @@ Vérifiez que <http://localhost> renvoie bien la page d'accueil XAMPP.
 Via la ligne de commande :
 
 ```bash
-mysql -u root -e "CREATE DATABASE gestion_etudiants
-                  CHARACTER SET utf8mb4
-                  COLLATE utf8mb4_unicode_ci;"
+mysql -u root -e "CREATE DATABASE gestion_etudiants CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 ```
 
 Ou via phpMyAdmin (<http://localhost/phpmyadmin>) → onglet **SQL** :
 
 ```sql
 CREATE DATABASE gestion_etudiants
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
 ```
 
-#### Étape 4 — Importer le schéma initial des étudiants
+#### Étape 4 — Importer le schéma initial
 
 Si vous avez un fichier `schema.sql` (export phpMyAdmin) :
 
@@ -533,8 +555,7 @@ Si vous avez un fichier `schema.sql` (export phpMyAdmin) :
 mysql -u root gestion_etudiants < schema.sql
 ```
 
-Sinon, créez la table `etudiants` directement (les autres tables seront
-créées par les installeurs CLI à l'étape 6) :
+Sinon, créez la table `etudiants` directement (les autres tables seront créées par les installeurs CLI à l'étape 6) :
 
 ```sql
 CREATE TABLE etudiants (
@@ -569,15 +590,13 @@ php database\install_auth.php
 php database\install_student_auth.php
 ```
 
-Le premier script crée la table `admins` et un compte par défaut. Le
-second étend la table `etudiants` (colonnes auth), crée `modules` +
-`inscriptions`, et alimente le catalogue avec 10 modules d'exemple.
+Le premier script crée la table `admins` et un compte par défaut. Le second étend la table `etudiants` (colonnes auth), crée `modules` + `inscriptions`, et alimente le catalogue avec 10 modules d'exemple.
 
 #### Étape 7 — Lancer l'application
 
 Ouvrez votre navigateur sur :
 
-```
+```text
 http://localhost/SecureStudentMS/public/
 ```
 
@@ -590,24 +609,17 @@ Vous serez redirigé vers la page de connexion admin si non authentifié.
 | 👨‍💼 **Administrateur** | `admin` | `admin123` |
 | 🎓 **Étudiant** | *email d'un étudiant existant* | `etudiant123` |
 
-> ⚠️ **IMPORTANT** — Changez ces mots de passe immédiatement après la
-> première connexion. Le compte étudiant utilise le mot de passe par
-> défaut pour tous les étudiants existants au moment de l'installation —
-> communiquez-leur individuellement et faites-les changer dès la
-> première connexion.
+> ⚠️ **IMPORTANT** — Changez ces mots de passe immédiatement après la première connexion. Le compte étudiant utilise le mot de passe par défaut pour tous les étudiants existants au moment de l'installation — communiquez-leur individuellement et faites-les changer dès la première connexion.
 
 </details>
 
+
 ---
+
 
 ## 🎨 Interface utilisateur
 
-L'UI repose sur une **double identité visuelle** : palette indigo pour
-l'administration, palette teal pour l'étudiant. Cette séparation n'est pas
-décorative — elle rend le rôle actuel **immédiatement reconnaissable** et
-empêche la confusion entre les deux espaces. Le design s'inspire de GitHub
-pour le mode sombre (système de profondeur à trois couches) et privilégie
-les transitions fluides à 300 ms (avec respect de `prefers-reduced-motion`).
+L'UI repose sur une **double identité visuelle** : palette indigo pour l'administration, palette teal pour l'étudiant. Cette séparation n'est pas décorative — elle rend le rôle actuel **immédiatement reconnaissable** et empêche la confusion entre les deux espaces. Le design s'inspire de GitHub pour le mode sombre (système de profondeur à trois couches) et privilégie les transitions fluides à 300 ms (avec respect de `prefers-reduced-motion`).
 
 ### Palettes de couleurs
 
@@ -620,83 +632,38 @@ les transitions fluides à 300 ms (avec respect de `prefers-reduced-motion`).
 
 ### Caractéristiques UI clés
 
-- **Sidebar admin** vs **top-nav horizontale étudiante** — deux mises en
-  page différentes pour deux contextes d'usage différents
-- **Live search** sur la liste étudiants avec **debounce 500 ms** —
-  pas de spam de requêtes pendant la frappe
-- **Tri par colonne** avec indicateur visuel direction — clic sur l'entête
-  bascule asc/desc
-- **Pagination intelligente** avec ellipsis (`first … current±2 … last`) —
-  reste lisible même avec 50 pages
-- **Toast notifications** déclenchés par flag GET (`?ajout=ok`) — auto-dismiss
-  4,5 s, fermeture manuelle possible
-- **Console SQL** avec **gouttière de numéros de ligne** + auto-grow +
-  raccourci `Ctrl+Enter` pour exécuter
-- **Live grade preview** sur la saisie des notes — le badge de statut
-  change de couleur à chaque frappe
-- **Sticky save bar** sur la grille de notes — le bouton "Enregistrer"
-  reste visible au scroll
-- **Dark mode pre-paint** — la classe `.dark-mode` est appliquée *avant*
-  le premier rendu pour éviter le flash de thème clair
-- **Transition smoothly** — la classe `.theme-transitioning` est ajoutée
-  pendant 300 ms, puis retirée, pour interpoler proprement les couleurs
+- **Sidebar admin** vs **top-nav horizontale étudiante** — deux mises en page différentes pour deux contextes d'usage différents
+- **Live search** sur la liste étudiants avec **debounce 500 ms** — pas de spam de requêtes pendant la frappe
+- **Tri par colonne** avec indicateur visuel direction — clic sur l'entête bascule asc/desc
+- **Pagination intelligente** avec ellipsis (`first … current±2 … last`) — reste lisible même avec 50 pages
+- **Toast notifications** déclenchés par flag GET (`?ajout=ok`) — auto-dismiss 4,5 s, fermeture manuelle possible
+- **Console SQL** avec **gouttière de numéros de ligne** + auto-grow + raccourci `Ctrl+Enter` pour exécuter
+- **Live grade preview** sur la saisie des notes — le badge de statut change de couleur à chaque frappe
+- **Sticky save bar** sur la grille de notes — le bouton « Enregistrer » reste visible au scroll
+- **Dark mode pre-paint** — la classe `.dark-mode` est appliquée *avant* le premier rendu pour éviter le flash de thème clair
+- **Transition smoothly** — la classe `.theme-transitioning` est ajoutée pendant 300 ms, puis retirée, pour interpoler proprement les couleurs
+
 
 ---
+
 
 ## 📊 Fonctionnalités avancées
 
 ### 💻 Console SQL Runner
 
-La console SQL est une vraie surface de développement. Elle accepte
-**toutes** les requêtes (SELECT, INSERT, UPDATE, DELETE, DDL) — en
-contrepartie elle impose une **modal de confirmation** sur les
-opérations destructives (`DELETE`, `DROP`, `TRUNCATE`, `ALTER`) avec un
-aperçu du SQL en palette Catppuccin Mocha. Chaque requête exécutée est
-**journalisée** via `error_log()` au format `SQL Runner [{IP}]: {200 chars}`
-pour fournir une piste d'audit complète. Les résultats SELECT sont
-affichés dans un tableau scrollable avec **export CSV** côté client
-(via `Blob` + `URL.createObjectURL`, sans script inline).
+La console SQL est une vraie surface de développement. Elle accepte **toutes** les requêtes (SELECT, INSERT, UPDATE, DELETE, DDL) — en contrepartie elle impose une **modal de confirmation** sur les opérations destructives (`DELETE`, `DROP`, `TRUNCATE`, `ALTER`) avec un aperçu du SQL en palette Catppuccin Mocha. Chaque requête exécutée est **journalisée** via `error_log()` au format `SQL Runner [{IP}]: {200 chars}` pour fournir une piste d'audit complète. Les résultats SELECT sont affichés dans un tableau scrollable avec **export CSV** côté client (via `Blob` + `URL.createObjectURL`, sans script inline).
 
 ### 📈 Dashboard Statistiques
 
-Quatre KPI cards en haut (étudiants total, filières, filière la plus
-populaire, dernier inscrit), suivies de deux graphiques **Chart.js** —
-un bar chart de répartition par filière et un line chart des
-inscriptions sur 12 mois glissants. Les couleurs sont **theme-aware** :
-une fonction `applyChartDefaults()` détecte la classe `.dark-mode` sur
-`<body>` et reconstruit chaque chart au déclenchement de l'événement
-`themeChanged`. Les données sont passées du serveur au client par
-**attributs `data-*`** sur un `<div>` caché — zéro inline JS, parfait
-compatible CSP.
+Quatre KPI cards en haut (étudiants total, filières, filière la plus populaire, dernier inscrit), suivies de deux graphiques **Chart.js** — un bar chart de répartition par filière et un line chart des inscriptions sur 12 mois glissants. Les couleurs sont **theme-aware** : une fonction `applyChartDefaults()` détecte la classe `.dark-mode` sur `<body>` et reconstruit chaque chart au déclenchement de l'événement `themeChanged`. Les données sont passées du serveur au client par **attributs `data-*`** sur un `<div>` caché — zéro inline JS, parfait compatible CSP.
 
 ### 🎯 Système de notation
 
-L'admin saisit les notes de manière **bulk** (toutes les inscriptions
-d'un étudiant sur une seule page) avec un aperçu live du statut : tape
-`15` → badge vert "Validé" instantané, tape `8` → badge rouge "Échoué",
-efface → bleu "Inscrit". Le statut est dérivé selon la règle
-**`note ≥ 10 → validé`, `note < 10 → échoué`, `vide → inscrit`** — la
-même règle est implémentée côté JS (preview) et côté PHP
-(`statut_for_note()`). La sécurité repose sur une vérification
-**ownership par ligne** (`WHERE id = ? AND etudiant_id = ?`) qui rend
-impossible la modification d'une inscription appartenant à un autre
-étudiant via un POST forgé. Un avertissement **`beforeunload`** se
-déclenche si l'admin tente de quitter avec des modifications non
-sauvegardées, et le listener est nettoyé sur soumission pour ne pas
-gêner l'enregistrement.
+L'admin saisit les notes de manière **bulk** (toutes les inscriptions d'un étudiant sur une seule page) avec un aperçu live du statut : tape `15` → badge vert « Validé » instantané, tape `8` → badge rouge « Échoué », efface → bleu « Inscrit ». Le statut est dérivé selon la règle **`note ≥ 10 → validé`, `note < 10 → échoué`, `vide → inscrit`** — la même règle est implémentée côté JS (preview) et côté PHP (`statut_for_note()`). La sécurité repose sur une vérification **ownership par ligne** (`WHERE id = ? AND etudiant_id = ?`) qui rend impossible la modification d'une inscription appartenant à un autre étudiant via un POST forgé. Un avertissement **`beforeunload`** se déclenche si l'admin tente de quitter avec des modifications non sauvegardées, et le listener est nettoyé sur soumission pour ne pas gêner l'enregistrement.
+
 
 ---
 
-## 📸 Captures d'écran
-
-| Page d'accueil | Ajout d'étudiant |
-| :---: | :---: |
-| ![Accueil](screenshots/home.PNG) | ![Ajouter](screenshots/add.PNG) |
-
-> Captures du dashboard, de la console SQL, de l'espace étudiant et du
-> dark mode disponibles dans `/screenshots`.
-
----
 
 ## 🔮 Améliorations futures
 
@@ -711,13 +678,13 @@ gêner l'enregistrement.
 | **Mode hors-ligne (PWA)** | 🟢 Basse | Service worker pour consultation offline du tableau de bord étudiant |
 | **Logs d'activité** | 🟢 Basse | Journal complet des actions admin avec UI de consultation et filtres |
 
+
 ---
+
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues. Le projet suit une procédure
-standard *fork → branch → PR* avec des conventions précises pour garder
-l'historique lisible et la base de code cohérente.
+Les contributions sont les bienvenues. Le projet suit une procédure standard *fork → branch → PR* avec des conventions précises pour garder l'historique lisible et la base de code cohérente.
 
 ### Procédure
 
@@ -771,16 +738,18 @@ Suivre [Conventional Commits](https://www.conventionalcommits.org/) :
 - [ ] Tests manuels documentés dans la description de la PR
 - [ ] Captures d'écran si UI
 
+
 ---
+
 
 ## 📄 Licence
 
 Distribué sous licence **MIT**.
 
 <details>
-<summary>Texte complet de la licence (cliquer pour développer)</summary>
+<summary>📜 <strong>Texte complet de la licence (cliquer pour développer)</strong></summary>
 
-```
+```text
 MIT License
 
 Copyright (c) 2025 Khalid MORJANE
@@ -806,7 +775,9 @@ SOFTWARE.
 
 </details>
 
+
 ---
+
 
 ## 👨‍💻 Auteur
 
@@ -815,15 +786,18 @@ SOFTWARE.
 ### **Khalid MORJANE**
 
 *Étudiant en informatique — Projet de fin d'études*
+
 **2025**
 
 [![GitHub](https://img.shields.io/badge/GitHub-Khalid_MORJANE-181717?logo=github)](https://github.com/)
 
-> *"Build the project you wish existed when you were learning."*
+> *« Build the project you wish existed when you were learning. »*
 
 </div>
 
+
 ---
+
 
 <div align="center">
 
@@ -831,6 +805,6 @@ SOFTWARE.
 
 <br>
 
-Made with ❤️ and a lot of ☕ by Khalid MORJANE
+Made with ❤️ and a lot of ☕ by **Khalid MORJANE**
 
 </div>

@@ -1,5 +1,5 @@
 <div align="center">
-```
+
 
 ███████╗███████╗ ██████╗██╗   ██╗██████╗ ███████╗
 ██╔════╝██╔═══██╗██╔══██╗██║   ██║██╔══██╗██╔════╝
@@ -8,7 +8,7 @@
 ███████╗██║  ██║██║  ██║╚██████╔╝██║     ███████╗
 ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝
         S E C U R E   S T U D E N T   M A N A G E M E N T
-```
+
 
 > *A production-grade, security-first student management platform —
 > built from scratch in pure PHP with zero frameworks.*
